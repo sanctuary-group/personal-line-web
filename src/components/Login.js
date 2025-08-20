@@ -88,13 +88,6 @@ const Login = ({ onLogin }) => {
           <a href="#forgot" className="forgot-link">
             パスワードを忘れた場合
           </a>
-          <div className="divider">
-            <span>または</span>
-          </div>
-          <button className="google-login-btn" disabled>
-            <span>Googleアカウントでログイン</span>
-            <small>（準備中）</small>
-          </button>
         </div>
 
         <div className="demo-info">

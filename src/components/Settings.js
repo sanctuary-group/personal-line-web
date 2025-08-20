@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
 
 const Settings = ({ onNavigate }) => {
-  const [currentTab, setCurrentTab] = useState('account'); // account, tags, admin
-  const [apiSettings, setApiSettings] = useState({
-    channelId: '',
-    channelSecret: '',
-    accessToken: '',
-    webhookUrl: 'https://your-domain.com/webhook',
-    isConnected: false
-  });
+  const [currentTab, setCurrentTab] = useState('tags'); // tags, admin
 
   const [tags, setTags] = useState([
     { id: 1, name: '新規', color: '#28a745', description: '新しく追加された友だち', count: 234 },
@@ -54,10 +47,6 @@ const Settings = ({ onNavigate }) => {
   const [inviteForm, setInviteForm] = useState({ email: '', role: 'viewer' });
   const [showInvite, setShowInvite] = useState(false);
 
-  const handleApiSave = () => {
-    // API設定の保存処理
-    setApiSettings(prev => ({ ...prev, isConnected: true }));
-  };
 
   const handleAddTag = () => {
     if (newTag.name.trim()) {
@@ -86,72 +75,8 @@ const Settings = ({ onNavigate }) => {
     }
   };
 
-  const renderAccountSettings = () => (
+  const renderBasicSettings = () => (
     <div className="settings-content">
-      <div className="card">
-        <h2 className="card-title">LINE公式アカウント連携</h2>
-        <p className="card-description">
-          LINE Developers Consoleで取得したAPIキーを設定してください。
-        </p>
-
-        <div className="connection-status">
-          <div className={`status-indicator ${apiSettings.isConnected ? 'connected' : 'disconnected'}`}>
-            {apiSettings.isConnected ? '✓ 接続済み' : '✗ 未接続'}
-          </div>
-        </div>
-
-        <div className="form-group">
-          <label className="form-label">Channel ID</label>
-          <input
-            type="text"
-            className="form-input"
-            value={apiSettings.channelId}
-            onChange={(e) => setApiSettings(prev => ({ ...prev, channelId: e.target.value }))}
-            placeholder="1234567890"
-          />
-        </div>
-
-        <div className="form-group">
-          <label className="form-label">Channel Secret</label>
-          <input
-            type="password"
-            className="form-input"
-            value={apiSettings.channelSecret}
-            onChange={(e) => setApiSettings(prev => ({ ...prev, channelSecret: e.target.value }))}
-            placeholder="••••••••••••••••"
-          />
-        </div>
-
-        <div className="form-group">
-          <label className="form-label">Channel Access Token</label>
-          <textarea
-            className="form-textarea"
-            value={apiSettings.accessToken}
-            onChange={(e) => setApiSettings(prev => ({ ...prev, accessToken: e.target.value }))}
-            placeholder="••••••••••••••••••••••••••••••••"
-            rows="3"
-          />
-        </div>
-
-        <div className="form-group">
-          <label className="form-label">Webhook URL</label>
-          <input
-            type="url"
-            className="form-input"
-            value={apiSettings.webhookUrl}
-            onChange={(e) => setApiSettings(prev => ({ ...prev, webhookUrl: e.target.value }))}
-          />
-          <small className="form-help">LINE Developers Consoleに登録するWebhook URLです</small>
-        </div>
-
-        <div className="form-actions">
-          <button className="btn btn-primary" onClick={handleApiSave}>
-            設定を保存
-          </button>
-          <button className="btn btn-outline">接続をテスト</button>
-        </div>
-      </div>
-
       <div className="card">
         <h2 className="card-title">基本設定</h2>
         
@@ -397,10 +322,10 @@ const Settings = ({ onNavigate }) => {
       <div className="settings-layout">
         <div className="settings-nav">
           <button
-            className={`nav-tab ${currentTab === 'account' ? 'active' : ''}`}
-            onClick={() => setCurrentTab('account')}
+            className={`nav-tab ${currentTab === 'basic' ? 'active' : ''}`}
+            onClick={() => setCurrentTab('basic')}
           >
-            アカウント連携
+            基本設定
           </button>
           <button
             className={`nav-tab ${currentTab === 'tags' ? 'active' : ''}`}
@@ -417,7 +342,7 @@ const Settings = ({ onNavigate }) => {
         </div>
 
         <div className="settings-main">
-          {currentTab === 'account' && renderAccountSettings()}
+          {currentTab === 'basic' && renderBasicSettings()}
           {currentTab === 'tags' && renderTagSettings()}
           {currentTab === 'admin' && renderAdminSettings()}
         </div>
@@ -464,35 +389,6 @@ const Settings = ({ onNavigate }) => {
           gap: 30px;
         }
 
-        .connection-status {
-          margin-bottom: 20px;
-        }
-
-        .status-indicator {
-          display: inline-flex;
-          align-items: center;
-          padding: 8px 15px;
-          border-radius: 20px;
-          font-size: 14px;
-          font-weight: 500;
-        }
-
-        .status-indicator.connected {
-          background: #d4edda;
-          color: #155724;
-        }
-
-        .status-indicator.disconnected {
-          background: #f8d7da;
-          color: #721c24;
-        }
-
-        .form-help {
-          display: block;
-          margin-top: 5px;
-          color: #666;
-          font-size: 12px;
-        }
 
         .checkbox-item {
           display: flex;
