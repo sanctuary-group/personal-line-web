@@ -1,167 +1,553 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>個人LINE管理画面</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <!-- Login Screen -->
-  <div id="login-container" class="login-container">
-    <div class="login-card">
-      <div class="login-header">
-        <h1>個人LINE管理画面</h1>
-        <p>アカウントにログインしてください</p>
-      </div>
-
-      <form id="login-form" class="login-form">
-        <div class="form-group">
-          <label for="email" class="form-label">
-            メールアドレス
-          </label>
-          <input
-            type="email"
-            id="email"
-            class="form-input"
-            placeholder="example@company.com"
-          />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>個人LINE管理画面</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Login Screen -->
+    <div id="login-container" class="login-container">
+      <div class="login-card">
+        <div class="login-header">
+          <h1>個人LINE管理画面</h1>
+          <p>アカウントにログインしてください</p>
         </div>
 
-        <div class="form-group">
-          <label for="password" class="form-label">
-            パスワード
-          </label>
-          <input
-            type="password"
-            id="password"
-            class="form-input"
-            placeholder="パスワードを入力"
-          />
+        <form id="login-form" class="login-form">
+          <div class="form-group">
+            <label for="email" class="form-label"> メールアドレス </label>
+            <input
+              type="email"
+              id="email"
+              class="form-input"
+              placeholder="example@company.com"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label"> パスワード </label>
+            <input
+              type="password"
+              id="password"
+              class="form-input"
+              placeholder="パスワードを入力"
+            />
+          </div>
+
+          <div
+            id="error-message"
+            class="error-message"
+            style="display: none"
+          ></div>
+
+          <button type="submit" id="login-btn" class="login-btn">
+            ログイン
+          </button>
+        </form>
+
+        <div class="login-footer">
+          <a href="#forgot" class="forgot-link"> パスワードを忘れた場合 </a>
         </div>
 
-        <div id="error-message" class="error-message" style="display: none;"></div>
-
-        <button type="submit" id="login-btn" class="login-btn">
-          ログイン
-        </button>
-      </form>
-
-      <div class="login-footer">
-        <a href="#forgot" class="forgot-link">
-          パスワードを忘れた場合
-        </a>
-      </div>
-
-      <div class="demo-info">
-        <h4>デモ用アカウント</h4>
-        <p>Email: admin@example.com</p>
-        <p>Password: password</p>
+        <div class="demo-info">
+          <h4>デモ用アカウント</h4>
+          <p>Email: admin@example.com</p>
+          <p>Password: password</p>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Main App -->
-  <div id="main-app" class="app" style="display: none;">
-    <header class="app-header">
-      <div class="header-content">
-        <h1>個人LINE管理画面</h1>
-        <button id="logout-btn" class="logout-btn">
-          ログアウト
-        </button>
-      </div>
-    </header>
+    <!-- Main App -->
+    <div id="main-app" class="app" style="display: none">
+      <header class="app-header">
+        <div class="header-content">
+          <h1>個人LINE管理画面</h1>
+          <button id="logout-btn" class="logout-btn">ログアウト</button>
+        </div>
+      </header>
 
-    <nav class="sidebar">
-      <div class="nav-menu">
-        <button class="nav-item active" data-page="dashboard">
-          ダッシュボード
-        </button>
-        <button class="nav-item" data-page="broadcast">
-          一斉配信
-        </button>
-        <button class="nav-item" data-page="step">
-          ステップ配信
-        </button>
-        <button class="nav-item" data-page="individual">
-          個別対応
-        </button>
-        <button class="nav-item" data-page="settings">
-          設定
-        </button>
-      </div>
-    </nav>
+      <nav class="sidebar">
+        <div class="nav-menu">
+          <button class="nav-item active" data-page="dashboard">
+            ダッシュボード
+          </button>
+          <button class="nav-item" data-page="broadcast">一斉配信</button>
+          <button class="nav-item" data-page="step">ステップ配信</button>
+          <button class="nav-item" data-page="individual">個別対応</button>
+          <button class="nav-item" data-page="history">配信履歴</button>
+          <button class="nav-item" data-page="settings">設定</button>
+        </div>
+      </nav>
 
-    <main class="main-content">
-      <!-- Dashboard Page -->
-      <div id="dashboard-page" class="page-container page">
-        <h1 class="page-title">ダッシュボード</h1>
+      <main class="main-content">
+        <!-- Dashboard Page -->
+        <div id="dashboard-page" class="page-container page">
+          <h1 class="page-title">ダッシュボード</h1>
 
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-number">12,453</div>
-            <div class="stat-label">友だち数</div>
-            <div class="stat-trend">+234</div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-number">12,453</div>
+              <div class="stat-label">友だち数</div>
+              <div class="stat-trend">+234</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">28</div>
+              <div class="stat-label">今月の配信数</div>
+              <div class="stat-trend">+12</div>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-number">28</div>
-            <div class="stat-label">今月の配信数</div>
-            <div class="stat-trend">+12</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">67.8%</div>
-            <div class="stat-label">開封率</div>
-            <div class="stat-trend">+2.3%</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">23.4%</div>
-            <div class="stat-label">クリック率</div>
-            <div class="stat-trend">+1.8%</div>
+
+          <div class="dashboard-grid">
+            <div class="card">
+              <h2 class="card-title">クイックアクション</h2>
+              <div class="quick-actions">
+                <button class="action-btn broadcast" data-navigate="broadcast">
+                  <div class="action-icon">📢</div>
+                  <div class="action-text">
+                    <h3>一斉配信</h3>
+                    <p>全友だちにメッセージを送信</p>
+                  </div>
+                </button>
+
+                <button class="action-btn step" data-navigate="step">
+                  <div class="action-icon">🔄</div>
+                  <div class="action-text">
+                    <h3>ステップ配信</h3>
+                    <p>自動シナリオを作成・管理</p>
+                  </div>
+                </button>
+
+                <button
+                  class="action-btn individual"
+                  data-navigate="individual"
+                >
+                  <div class="action-icon">💬</div>
+                  <div class="action-text">
+                    <h3>個別対応</h3>
+                    <p>友だちとの個別メッセージ</p>
+                  </div>
+                </button>
+
+                <button class="action-btn settings" data-navigate="settings">
+                  <div class="action-icon">⚙️</div>
+                  <div class="action-text">
+                    <h3>設定</h3>
+                    <p>アカウント・システム設定</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <div class="card">
+              <h2 class="card-title">最近の配信履歴</h2>
+              <div class="table-container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>タイトル</th>
+                      <th>種類</th>
+                      <th>配信日</th>
+                      <th>ステータス</th>
+                      <th>配信数</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>新商品のお知らせ</td>
+                      <td>一斉配信</td>
+                      <td>2024-01-15</td>
+                      <td>
+                        <span class="status-badge status-active">配信完了</span>
+                      </td>
+                      <td>12,453</td>
+                    </tr>
+                    <tr>
+                      <td>ウェルカムメッセージ</td>
+                      <td>ステップ配信</td>
+                      <td>2024-01-14</td>
+                      <td>
+                        <span class="status-badge status-progress">進行中</span>
+                      </td>
+                      <td>234</td>
+                    </tr>
+                    <tr>
+                      <td>キャンペーン情報</td>
+                      <td>一斉配信</td>
+                      <td>2024-01-13</td>
+                      <td>
+                        <span class="status-badge status-active">配信完了</span>
+                      </td>
+                      <td>11,892</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer">
+                <button class="btn btn-outline" data-navigate="history">
+                  すべての履歴を見る
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="dashboard-grid">
+        <!-- Broadcast Page -->
+        <div
+          id="broadcast-page"
+          class="page-container page"
+          style="display: none"
+        >
+          <div class="page-header">
+            <h1 class="page-title">一斉配信</h1>
+            <button class="btn btn-outline" data-navigate="dashboard">
+              ダッシュボードに戻る
+            </button>
+          </div>
+
+          <div class="broadcast-form">
+            <div class="card">
+              <h2 class="card-title">基本設定</h2>
+
+              <div class="form-group">
+                <label class="form-label">配信タイトル *</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  placeholder="例: 新商品のお知らせ"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">配信対象 *</label>
+                <div class="radio-group">
+                  <label class="radio-item">
+                    <input type="radio" name="target" value="all" checked />
+                    全友だち (12,453人)
+                  </label>
+                  <label class="radio-item">
+                    <input type="radio" name="target" value="segment" />
+                    セグメント
+                  </label>
+                  <label class="radio-item">
+                    <input type="radio" name="target" value="tags" />
+                    タグ
+                  </label>
+                </div>
+              </div>
+
+              <!-- 友達選択エリア（セグメント選択時に表示） -->
+              <div id="friend-selection-area" class="form-group" style="display: none;">
+                <label class="form-label">送信先友達を選択</label>
+                <div class="friend-selection-container">
+                  <div class="friend-selection-header">
+                    <div class="search-box">
+                      <input
+                        type="text"
+                        id="friend-search"
+                        class="form-input"
+                        placeholder="友達名で検索..."
+                      />
+                    </div>
+                    <div class="selection-actions">
+                      <button type="button" class="btn btn-outline btn-sm" id="select-all-friends">
+                        全選択
+                      </button>
+                      <button type="button" class="btn btn-outline btn-sm" id="deselect-all-friends">
+                        全解除
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="selected-count">
+                    選択中: <span id="selected-friends-count">0</span> 人
+                  </div>
+
+                  <div class="friends-selection-list" id="friends-selection-list">
+                    <!-- 友達リストがここに動的に生成される -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h2 class="card-title">メッセージ内容</h2>
+
+              <div class="form-group">
+                <label class="form-label">メッセージタイプ</label>
+                <div class="radio-group">
+                  <label class="radio-item">
+                    <input
+                      type="radio"
+                      name="messageType"
+                      value="text"
+                      checked
+                    />
+                    テキストメッセージ
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">メッセージ内容 *</label>
+                <textarea
+                  class="form-textarea"
+                  placeholder="メッセージを入力してください"
+                  rows="4"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary btn-large">確認画面へ進む</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step Delivery Page -->
+        <div id="step-page" class="page-container page" style="display: none">
+          <div class="page-header">
+            <h1 class="page-title">ステップ配信</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary">新規シナリオ作成</button>
+            </div>
+          </div>
+
+          <div class="scenarios-grid">
+            <div
+              class="scenario-card"
+              data-scenario-id="1"
+              data-scenario-name="ウェルカムシーケンス"
+              data-scenario-description="新規登録者向けの導入メッセージ"
+              data-delivery-timing="immediate"
+            >
+              <div class="scenario-header">
+                <h3>ウェルカムシーケンス</h3>
+                <span class="status-badge status-active">配信中</span>
+              </div>
+
+              <p class="scenario-description">新規登録者向けの導入メッセージ</p>
+
+              <div class="scenario-stats">
+                <div class="stat-item">
+                  <span class="stat-label">ステップ数:</span>
+                  <span class="stat-value">3</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">進行中ユーザー:</span>
+                  <span class="stat-value">234</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">完了率:</span>
+                  <span class="stat-value">78%</span>
+                </div>
+              </div>
+
+              <div class="scenario-actions">
+                <button class="btn btn-outline btn-sm scenario-edit-btn">
+                  編集
+                </button>
+                <button class="btn btn-secondary btn-sm">停止</button>
+              </div>
+            </div>
+
+            <div
+              class="scenario-card"
+              data-scenario-id="2"
+              data-scenario-name="商品紹介シリーズ"
+              data-scenario-description="主力商品の段階的紹介"
+              data-delivery-timing="scheduled"
+              data-scheduled-days="1"
+              data-scheduled-time="10:00"
+            >
+              <div class="scenario-header">
+                <h3>商品紹介シリーズ</h3>
+                <span class="status-badge status-active">配信中</span>
+              </div>
+
+              <p class="scenario-description">主力商品の段階的紹介</p>
+
+              <div class="scenario-stats">
+                <div class="stat-item">
+                  <span class="stat-label">ステップ数:</span>
+                  <span class="stat-value">5</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">進行中ユーザー:</span>
+                  <span class="stat-value">156</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">完了率:</span>
+                  <span class="stat-value">65%</span>
+                </div>
+              </div>
+
+              <div class="scenario-actions">
+                <button class="btn btn-outline btn-sm scenario-edit-btn">
+                  編集
+                </button>
+                <button class="btn btn-secondary btn-sm">停止</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Individual Support Page -->
+        <div
+          id="individual-page"
+          class="page-container page"
+          style="display: none"
+        >
+          <div class="page-header">
+            <h1 class="page-title">個別対応</h1>
+          </div>
+
+          <div class="friends-container">
+            <div class="friends-header">
+              <div class="search-filters">
+                <div class="search-box">
+                  <input
+                    type="text"
+                    class="form-input"
+                    placeholder="友だち名またはIDで検索..."
+                  />
+                </div>
+              </div>
+              <div class="friends-count">4件の友だち</div>
+            </div>
+
+            <div class="friends-list">
+              <div class="friend-item">
+                <div class="friend-avatar">田</div>
+
+                <div class="friend-info">
+                  <div class="friend-name">
+                    田中太郎
+                    <span class="unread-badge">2</span>
+                  </div>
+                  <div class="friend-id">ID: U001234</div>
+                  <div class="last-message">
+                    <span class="message-text">ありがとうございます！</span>
+                    <span class="message-time">2024-01-15 14:30</span>
+                  </div>
+                </div>
+
+                <div class="friend-actions">
+                  <button class="btn btn-primary btn-sm">メッセージ</button>
+                </div>
+              </div>
+
+              <div class="friend-item">
+                <div class="friend-avatar">佐</div>
+
+                <div class="friend-info">
+                  <div class="friend-name">
+                    佐藤花子
+                    <span class="unread-badge">1</span>
+                  </div>
+                  <div class="friend-id">ID: U005678</div>
+                  <div class="last-message">
+                    <span class="message-text">商品について質問があります</span>
+                    <span class="message-time">2024-01-15 10:15</span>
+                  </div>
+                </div>
+
+                <div class="friend-actions">
+                  <button class="btn btn-primary btn-sm">メッセージ</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div
+          id="settings-page"
+          class="page-container page"
+          style="display: none"
+        >
+          <h1 class="page-title">設定</h1>
+
           <div class="card">
-            <h2 class="card-title">クイックアクション</h2>
-            <div class="quick-actions">
-              <button class="action-btn broadcast" data-navigate="broadcast">
-                <div class="action-icon">📢</div>
-                <div class="action-text">
-                  <h3>一斉配信</h3>
-                  <p>全友だちにメッセージを送信</p>
-                </div>
-              </button>
+            <h2 class="card-title">アカウント設定</h2>
+            <div class="form-group">
+              <label class="form-label">表示名</label>
+              <input type="text" class="form-input" value="個人LINE管理画面" />
+            </div>
 
-              <button class="action-btn step" data-navigate="step">
-                <div class="action-icon">🔄</div>
-                <div class="action-text">
-                  <h3>ステップ配信</h3>
-                  <p>自動シナリオを作成・管理</p>
-                </div>
-              </button>
+            <div class="form-group">
+              <label class="form-label">メールアドレス</label>
+              <input
+                type="email"
+                class="form-input"
+                value="admin@example.com"
+              />
+            </div>
 
-              <button class="action-btn individual" data-navigate="individual">
-                <div class="action-icon">💬</div>
-                <div class="action-text">
-                  <h3>個別対応</h3>
-                  <p>友だちとの個別メッセージ</p>
-                </div>
-              </button>
+            <button class="btn btn-primary">保存</button>
+          </div>
 
-              <button class="action-btn settings" data-navigate="settings">
-                <div class="action-icon">⚙️</div>
-                <div class="action-text">
-                  <h3>設定</h3>
-                  <p>アカウント・システム設定</p>
-                </div>
-              </button>
+          <div class="card">
+            <h2 class="card-title">通知設定</h2>
+            <div class="form-group">
+              <label class="checkbox-item">
+                <input type="checkbox" checked />
+                新しいメッセージの通知
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-item">
+                <input type="checkbox" checked />
+                配信完了の通知
+              </label>
+            </div>
+
+            <button class="btn btn-primary">保存</button>
+          </div>
+        </div>
+
+        <!-- History Page -->
+        <div
+          id="history-page"
+          class="page-container page"
+          style="display: none"
+        >
+          <div class="page-header">
+            <h1 class="page-title">配信履歴</h1>
+            <button class="btn btn-outline" data-navigate="dashboard">
+              ダッシュボードに戻る
+            </button>
+          </div>
+
+          <div class="history-filters">
+            <div class="search-box">
+              <input
+                type="text"
+                id="history-search"
+                class="form-input"
+                placeholder="配信タイトルまたは内容で検索..."
+              />
+            </div>
+            <div class="filter-controls">
+              <select id="history-type-filter" class="form-select">
+                <option value="">すべてのタイプ</option>
+                <option value="一斉配信">一斉配信</option>
+                <option value="ステップ配信">ステップ配信</option>
+              </select>
+              <select id="history-status-filter" class="form-select">
+                <option value="">すべてのステータス</option>
+                <option value="配信完了">配信完了</option>
+                <option value="進行中">進行中</option>
+                <option value="停止">停止</option>
+              </select>
             </div>
           </div>
 
           <div class="card">
-            <h2 class="card-title">最近の配信履歴</h2>
             <div class="table-container">
-              <table class="table">
+              <table class="table" id="history-table">
                 <thead>
                   <tr>
                     <th>タイトル</th>
@@ -169,6 +555,7 @@
                     <th>配信日</th>
                     <th>ステータス</th>
                     <th>配信数</th>
+                    <th>操作</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -176,318 +563,420 @@
                     <td>新商品のお知らせ</td>
                     <td>一斉配信</td>
                     <td>2024-01-15</td>
-                    <td><span class="status-badge status-active">配信完了</span></td>
+                    <td>
+                      <span class="status-badge status-active">配信完了</span>
+                    </td>
                     <td>12,453</td>
+                    <td>
+                      <button class="btn btn-outline btn-sm">詳細</button>
+                    </td>
                   </tr>
                   <tr>
                     <td>ウェルカムメッセージ</td>
                     <td>ステップ配信</td>
                     <td>2024-01-14</td>
-                    <td><span class="status-badge status-progress">進行中</span></td>
+                    <td>
+                      <span class="status-badge status-progress">進行中</span>
+                    </td>
                     <td>234</td>
+                    <td>
+                      <button class="btn btn-outline btn-sm">詳細</button>
+                      <button class="btn btn-secondary btn-sm">停止</button>
+                    </td>
                   </tr>
                   <tr>
                     <td>キャンペーン情報</td>
                     <td>一斉配信</td>
                     <td>2024-01-13</td>
-                    <td><span class="status-badge status-active">配信完了</span></td>
+                    <td>
+                      <span class="status-badge status-active">配信完了</span>
+                    </td>
                     <td>11,892</td>
+                    <td>
+                      <button class="btn btn-outline btn-sm">詳細</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>年末年始のご挨拶</td>
+                    <td>一斉配信</td>
+                    <td>2024-01-01</td>
+                    <td>
+                      <span class="status-badge status-active">配信完了</span>
+                    </td>
+                    <td>11,234</td>
+                    <td>
+                      <button class="btn btn-outline btn-sm">詳細</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>冬季休暇のお知らせ</td>
+                    <td>一斉配信</td>
+                    <td>2023-12-28</td>
+                    <td>
+                      <span class="status-badge status-active">配信完了</span>
+                    </td>
+                    <td>10,987</td>
+                    <td>
+                      <button class="btn btn-outline btn-sm">詳細</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>商品アンケート</td>
+                    <td>ステップ配信</td>
+                    <td>2023-12-25</td>
+                    <td><span class="status-badge status-error">停止</span></td>
+                    <td>156</td>
+                    <td>
+                      <button class="btn btn-outline btn-sm">詳細</button>
+                      <button class="btn btn-primary btn-sm">再開</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>クリスマスキャンペーン</td>
+                    <td>一斉配信</td>
+                    <td>2023-12-20</td>
+                    <td>
+                      <span class="status-badge status-active">配信完了</span>
+                    </td>
+                    <td>12,678</td>
+                    <td>
+                      <button class="btn btn-outline btn-sm">詳細</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>新機能のご紹介</td>
+                    <td>ステップ配信</td>
+                    <td>2023-12-15</td>
+                    <td>
+                      <span class="status-badge status-active">配信完了</span>
+                    </td>
+                    <td>445</td>
+                    <td>
+                      <button class="btn btn-outline btn-sm">詳細</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>月末セール情報</td>
+                    <td>一斉配信</td>
+                    <td>2023-12-10</td>
+                    <td>
+                      <span class="status-badge status-active">配信完了</span>
+                    </td>
+                    <td>11,543</td>
+                    <td>
+                      <button class="btn btn-outline btn-sm">詳細</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>顧客感謝祭のご案内</td>
+                    <td>一斉配信</td>
+                    <td>2023-12-01</td>
+                    <td>
+                      <span class="status-badge status-active">配信完了</span>
+                    </td>
+                    <td>12,105</td>
+                    <td>
+                      <button class="btn btn-outline btn-sm">詳細</button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div class="card-footer">
-              <button class="btn btn-outline">すべての履歴を見る</button>
+
+            <div class="pagination">
+              <button class="btn btn-outline btn-sm" disabled>前へ</button>
+              <span class="pagination-info">1 / 3 ページ (全 28 件)</span>
+              <button class="btn btn-outline btn-sm">次へ</button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Chat Modal -->
+    <div id="chat-modal" class="chat-modal" style="display: none">
+      <div class="chat-modal-content">
+        <div class="chat-header">
+          <div class="chat-user-info">
+            <div class="chat-avatar" id="chat-avatar">田</div>
+            <div class="chat-user-details">
+              <div class="chat-user-name" id="chat-user-name">田中太郎</div>
+              <div class="chat-user-id" id="chat-user-id">ID: U001234</div>
+            </div>
+          </div>
+          <button class="chat-close-btn" id="chat-close-btn">×</button>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+          <!-- Sample messages -->
+          <div class="message message-received">
+            <div class="message-content">
+              <div class="message-text">
+                こんにちは！商品について質問があります。
+              </div>
+              <div class="message-time">2024-01-15 10:15</div>
+            </div>
+          </div>
+          <div class="message message-sent">
+            <div class="message-content">
+              <div class="message-text">
+                お疲れ様です。どのような質問でしょうか？
+              </div>
+              <div class="message-time">2024-01-15 10:17</div>
+            </div>
+          </div>
+          <div class="message message-received">
+            <div class="message-content">
+              <div class="message-text">
+                商品の使用方法について詳しく教えていただけますか？
+              </div>
+              <div class="message-time">2024-01-15 10:20</div>
+            </div>
+          </div>
+          <div class="message message-sent">
+            <div class="message-content">
+              <div class="message-text">
+                はい、承知いたします。詳細な使用方法をご説明します。
+              </div>
+              <div class="message-time">2024-01-15 10:22</div>
             </div>
           </div>
         </div>
 
-        <div class="dashboard-charts">
-          <div class="card">
-            <h2 class="card-title">配信パフォーマンス</h2>
-            <div class="chart-placeholder">
-              <div class="chart-info">
-                <p>📊 グラフ表示エリア</p>
-                <small>実装時にChart.jsなどのライブラリを使用してグラフを表示</small>
-              </div>
-            </div>
+        <div class="chat-input-area">
+          <div class="chat-input-container">
+            <textarea
+              id="chat-input"
+              class="chat-input"
+              placeholder="メッセージを入力..."
+              rows="3"
+            ></textarea>
+            <button id="chat-send-btn" class="chat-send-btn">送信</button>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Broadcast Page -->
-      <div id="broadcast-page" class="page-container page" style="display: none;">
-        <div class="page-header">
-          <h1 class="page-title">一斉配信</h1>
-          <button class="btn btn-outline" data-navigate="dashboard">
-            ダッシュボードに戻る
-          </button>
+    <!-- New Scenario Creation Modal -->
+    <div id="scenario-modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>新規シナリオ作成</h2>
+          <button class="modal-close-btn" id="scenario-close-btn">×</button>
         </div>
 
-        <div class="broadcast-form">
+        <div class="modal-body">
           <div class="card">
-            <h2 class="card-title">基本設定</h2>
+            <h3 class="card-title">基本設定</h3>
 
             <div class="form-group">
-              <label class="form-label">配信タイトル *</label>
+              <label class="form-label">シナリオ名 *</label>
               <input
                 type="text"
+                id="scenario-name"
                 class="form-input"
-                placeholder="例: 新商品のお知らせ"
+                placeholder="例: ウェルカムシーケンス"
               />
             </div>
 
             <div class="form-group">
-              <label class="form-label">配信対象 *</label>
-              <div class="radio-group">
-                <label class="radio-item">
-                  <input type="radio" name="target" value="all" checked />
-                  全友だち (12,453人)
-                </label>
-                <label class="radio-item">
-                  <input type="radio" name="target" value="segment" />
-                  セグメント
-                </label>
-                <label class="radio-item">
-                  <input type="radio" name="target" value="tags" />
-                  タグ
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h2 class="card-title">メッセージ内容</h2>
-
-            <div class="form-group">
-              <label class="form-label">メッセージタイプ</label>
-              <div class="radio-group">
-                <label class="radio-item">
-                  <input type="radio" name="messageType" value="text" checked />
-                  テキストメッセージ
-                </label>
-                <label class="radio-item">
-                  <input type="radio" name="messageType" value="image" />
-                  画像メッセージ
-                </label>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">メッセージ内容 *</label>
+              <label class="form-label">説明</label>
               <textarea
+                id="scenario-description"
                 class="form-textarea"
-                placeholder="メッセージを入力してください"
-                rows="4"
+                placeholder="シナリオの説明を入力してください"
+                rows="3"
               ></textarea>
             </div>
           </div>
 
-          <div class="form-actions">
-            <button class="btn btn-primary btn-large">
-              確認画面へ進む
-            </button>
+          <div class="card">
+            <h3 class="card-title">配信タイミング</h3>
+
+            <div class="form-group">
+              <div class="radio-group">
+                <label class="radio-item">
+                  <input
+                    type="radio"
+                    name="deliveryTiming"
+                    value="immediate"
+                    checked
+                  />
+                  ステップ開始直後
+                </label>
+                <label class="radio-item">
+                  <input type="radio" name="deliveryTiming" value="scheduled" />
+                  日時で指定
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group" id="scheduled-group" style="display: none">
+              <p class="form-description">
+                ステップ開始時からの経過日数と時間で配信タイミングを指定します
+              </p>
+
+              <div class="timing-inputs">
+                <div class="timing-input-group">
+                  <label class="form-label">経過日数 *</label>
+                  <input
+                    type="number"
+                    id="scenario-days"
+                    class="form-input"
+                    min="0"
+                    max="30"
+                    value="0"
+                    placeholder="0"
+                  />
+                  <span class="input-suffix">日後</span>
+                </div>
+
+                <div class="timing-input-group">
+                  <label class="form-label">配信時間 *</label>
+                  <input
+                    type="time"
+                    id="scenario-time"
+                    class="form-input"
+                    value="09:00"
+                  />
+                </div>
+              </div>
+
+              <div class="timing-preview" id="timing-preview">
+                ステップは開始から<span id="preview-days">0</span>日後の<span
+                  id="preview-time"
+                  >09:00</span
+                >に配信する
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="scenario-cancel-btn">
+            キャンセル
+          </button>
+          <button class="btn btn-primary" id="scenario-create-btn">
+            シナリオを作成
+          </button>
         </div>
       </div>
+    </div>
 
-      <!-- Step Delivery Page -->
-      <div id="step-page" class="page-container page" style="display: none;">
-        <div class="page-header">
-          <h1 class="page-title">ステップ配信</h1>
-          <div class="header-actions">
-            <button class="btn btn-outline">進行状況管理</button>
-            <button class="btn btn-primary">新規シナリオ作成</button>
+    <!-- Edit Scenario Modal -->
+    <div id="scenario-edit-modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>シナリオ編集</h2>
+          <button class="modal-close-btn" id="scenario-edit-close-btn">
+            ×
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="card">
+            <h3 class="card-title">基本設定</h3>
+
+            <div class="form-group">
+              <label class="form-label">シナリオ名 *</label>
+              <input
+                type="text"
+                id="edit-scenario-name"
+                class="form-input"
+                placeholder="例: ウェルカムシーケンス"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">説明</label>
+              <textarea
+                id="edit-scenario-description"
+                class="form-textarea"
+                placeholder="シナリオの説明を入力してください"
+                rows="3"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">配信タイミング</h3>
+
+            <div class="form-group">
+              <div class="radio-group">
+                <label class="radio-item">
+                  <input
+                    type="radio"
+                    name="editDeliveryTiming"
+                    value="immediate"
+                    checked
+                  />
+                  ステップ開始直後
+                </label>
+                <label class="radio-item">
+                  <input
+                    type="radio"
+                    name="editDeliveryTiming"
+                    value="scheduled"
+                  />
+                  日時で指定
+                </label>
+              </div>
+            </div>
+
+            <div
+              class="form-group"
+              id="edit-scheduled-group"
+              style="display: none"
+            >
+              <p class="form-description">
+                ステップ開始時からの経過日数と時間で配信タイミングを指定します
+              </p>
+
+              <div class="timing-inputs">
+                <div class="timing-input-group">
+                  <label class="form-label">経過日数 *</label>
+                  <input
+                    type="number"
+                    id="edit-scenario-days"
+                    class="form-input"
+                    min="0"
+                    max="30"
+                    value="0"
+                    placeholder="0"
+                  />
+                  <span class="input-suffix">日後</span>
+                </div>
+
+                <div class="timing-input-group">
+                  <label class="form-label">配信時間 *</label>
+                  <input
+                    type="time"
+                    id="edit-scenario-time"
+                    class="form-input"
+                    value="09:00"
+                  />
+                </div>
+              </div>
+
+              <div class="timing-preview" id="edit-timing-preview">
+                ステップは開始から<span id="edit-preview-days">0</span
+                >日後の<span id="edit-preview-time">09:00</span>に配信する
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="scenarios-grid">
-          <div class="scenario-card">
-            <div class="scenario-header">
-              <h3>ウェルカムシーケンス</h3>
-              <span class="status-badge status-active">配信中</span>
-            </div>
-
-            <p class="scenario-description">新規登録者向けの導入メッセージ</p>
-
-            <div class="scenario-stats">
-              <div class="stat-item">
-                <span class="stat-label">ステップ数:</span>
-                <span class="stat-value">3</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">進行中ユーザー:</span>
-                <span class="stat-value">234</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">完了率:</span>
-                <span class="stat-value">78%</span>
-              </div>
-            </div>
-
-            <div class="scenario-actions">
-              <button class="btn btn-outline btn-sm">編集</button>
-              <button class="btn btn-outline btn-sm">複製</button>
-              <button class="btn btn-secondary btn-sm">停止</button>
-            </div>
-          </div>
-
-          <div class="scenario-card">
-            <div class="scenario-header">
-              <h3>商品紹介シリーズ</h3>
-              <span class="status-badge status-active">配信中</span>
-            </div>
-
-            <p class="scenario-description">主力商品の段階的紹介</p>
-
-            <div class="scenario-stats">
-              <div class="stat-item">
-                <span class="stat-label">ステップ数:</span>
-                <span class="stat-value">5</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">進行中ユーザー:</span>
-                <span class="stat-value">156</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">完了率:</span>
-                <span class="stat-value">65%</span>
-              </div>
-            </div>
-
-            <div class="scenario-actions">
-              <button class="btn btn-outline btn-sm">編集</button>
-              <button class="btn btn-outline btn-sm">複製</button>
-              <button class="btn btn-secondary btn-sm">停止</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Individual Support Page -->
-      <div id="individual-page" class="page-container page" style="display: none;">
-        <div class="page-header">
-          <h1 class="page-title">個別対応</h1>
-          <button class="btn btn-primary">自動応答設定</button>
-        </div>
-
-        <div class="friends-container">
-          <div class="friends-header">
-            <div class="search-filters">
-              <div class="search-box">
-                <input
-                  type="text"
-                  class="form-input"
-                  placeholder="友だち名またはIDで検索..."
-                />
-              </div>
-              <div class="filter-tags">
-                <select class="form-select">
-                  <option value="all">すべてのタグ</option>
-                  <option value="新規">新規</option>
-                  <option value="アクティブ">アクティブ</option>
-                  <option value="VIP">VIP</option>
-                </select>
-              </div>
-            </div>
-            <div class="friends-count">4件の友だち</div>
-          </div>
-
-          <div class="friends-list">
-            <div class="friend-item">
-              <div class="friend-avatar">田</div>
-
-              <div class="friend-info">
-                <div class="friend-name">
-                  田中太郎
-                  <span class="unread-badge">2</span>
-                </div>
-                <div class="friend-id">ID: U001234</div>
-                <div class="friend-tags">
-                  <span class="tag">新規</span>
-                  <span class="tag">アクティブ</span>
-                </div>
-                <div class="last-message">
-                  <span class="message-text">ありがとうございます！</span>
-                  <span class="message-time">2024-01-15 14:30</span>
-                </div>
-              </div>
-
-              <div class="friend-actions">
-                <button class="btn btn-primary btn-sm">メッセージ</button>
-                <button class="btn btn-outline btn-sm">プロフィール</button>
-              </div>
-            </div>
-
-            <div class="friend-item">
-              <div class="friend-avatar">佐</div>
-
-              <div class="friend-info">
-                <div class="friend-name">
-                  佐藤花子
-                  <span class="unread-badge">1</span>
-                </div>
-                <div class="friend-id">ID: U005678</div>
-                <div class="friend-tags">
-                  <span class="tag">VIP</span>
-                  <span class="tag">購入済み</span>
-                </div>
-                <div class="last-message">
-                  <span class="message-text">商品について質問があります</span>
-                  <span class="message-time">2024-01-15 10:15</span>
-                </div>
-              </div>
-
-              <div class="friend-actions">
-                <button class="btn btn-primary btn-sm">メッセージ</button>
-                <button class="btn btn-outline btn-sm">プロフィール</button>
-              </div>
-            </div>
-          </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="scenario-edit-cancel-btn">
+            キャンセル
+          </button>
+          <button class="btn btn-primary" id="scenario-edit-save-btn">
+            変更を保存
+          </button>
         </div>
       </div>
+    </div>
 
-      <!-- Settings Page -->
-      <div id="settings-page" class="page-container page" style="display: none;">
-        <h1 class="page-title">設定</h1>
-
-        <div class="card">
-          <h2 class="card-title">アカウント設定</h2>
-          <div class="form-group">
-            <label class="form-label">表示名</label>
-            <input type="text" class="form-input" value="個人LINE管理画面" />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">メールアドレス</label>
-            <input type="email" class="form-input" value="admin@example.com" />
-          </div>
-
-          <button class="btn btn-primary">保存</button>
-        </div>
-
-        <div class="card">
-          <h2 class="card-title">通知設定</h2>
-          <div class="form-group">
-            <label class="checkbox-item">
-              <input type="checkbox" checked />
-              新しいメッセージの通知
-            </label>
-          </div>
-
-          <div class="form-group">
-            <label class="checkbox-item">
-              <input type="checkbox" checked />
-              配信完了の通知
-            </label>
-          </div>
-
-          <button class="btn btn-primary">保存</button>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
