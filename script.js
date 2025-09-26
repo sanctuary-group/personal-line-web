@@ -174,7 +174,7 @@ function initializeBroadcastForm() {
 }
 
 function handleMessageTypeChange(type) {
-  // Here you would show/hide image upload section
+  // Only text messages are supported
   console.log('Message type changed to:', type);
 }
 
@@ -186,17 +186,10 @@ function handleTargetChange(target) {
 // Individual support functionality
 function initializeIndividualSupport() {
   const searchInput = document.querySelector('#individual-page .search-box input');
-  const filterSelect = document.querySelector('#individual-page .filter-tags select');
 
   if (searchInput) {
     searchInput.addEventListener('input', function() {
-      filterFriends(this.value, filterSelect.value);
-    });
-  }
-
-  if (filterSelect) {
-    filterSelect.addEventListener('change', function() {
-      filterFriends(searchInput.value, this.value);
+      filterFriends(this.value);
     });
   }
 
@@ -204,15 +197,20 @@ function initializeIndividualSupport() {
   const messageBtns = document.querySelectorAll('.friend-actions .btn-primary');
   messageBtns.forEach(btn => {
     btn.addEventListener('click', function() {
-      // Here you would open chat interface
-      console.log('Opening chat...');
+      const friendItem = this.closest('.friend-item');
+      if (friendItem) {
+        const friendName = friendItem.querySelector('.friend-name').textContent.trim();
+        const friendId = friendItem.querySelector('.friend-id').textContent.trim();
+        const friendAvatar = friendItem.querySelector('.friend-avatar').textContent.trim();
+        openChat(friendName, friendId, friendAvatar);
+      }
     });
   });
 }
 
-function filterFriends(searchTerm, tagFilter) {
+function filterFriends(searchTerm) {
   // Here you would implement friend filtering logic
-  console.log('Filtering friends:', searchTerm, tagFilter);
+  console.log('Filtering friends:', searchTerm);
 }
 
 // Settings functionality
@@ -228,6 +226,125 @@ function initializeSettings() {
       alert('設定を保存しました');
     });
   });
+}
+
+// History page functionality
+function initializeHistoryPage() {
+  const searchInput = document.getElementById('history-search');
+  const typeFilter = document.getElementById('history-type-filter');
+  const statusFilter = document.getElementById('history-status-filter');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      filterHistoryTable();
+    });
+  }
+
+  if (typeFilter) {
+    typeFilter.addEventListener('change', function() {
+      filterHistoryTable();
+    });
+  }
+
+  if (statusFilter) {
+    statusFilter.addEventListener('change', function() {
+      filterHistoryTable();
+    });
+  }
+
+  // Initialize action buttons
+  const actionButtons = document.querySelectorAll('#history-table .btn');
+  actionButtons.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const action = this.textContent.trim();
+      const row = this.closest('tr');
+      const title = row.querySelector('td:first-child').textContent.trim();
+
+      handleHistoryAction(action, title, row);
+    });
+  });
+}
+
+function filterHistoryTable() {
+  const searchTerm = document.getElementById('history-search').value.toLowerCase();
+  const typeFilter = document.getElementById('history-type-filter').value;
+  const statusFilter = document.getElementById('history-status-filter').value;
+
+  const rows = document.querySelectorAll('#history-table tbody tr');
+  let visibleCount = 0;
+
+  rows.forEach(row => {
+    const title = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+    const type = row.querySelector('td:nth-child(2)').textContent;
+    const statusBadge = row.querySelector('.status-badge');
+    const status = statusBadge ? statusBadge.textContent : '';
+
+    const matchesSearch = title.includes(searchTerm);
+    const matchesType = !typeFilter || type === typeFilter;
+    const matchesStatus = !statusFilter || status === statusFilter;
+
+    if (matchesSearch && matchesType && matchesStatus) {
+      row.style.display = '';
+      visibleCount++;
+    } else {
+      row.style.display = 'none';
+    }
+  });
+
+  // Update pagination info (simplified)
+  const paginationInfo = document.querySelector('.pagination-info');
+  if (paginationInfo && visibleCount > 0) {
+    paginationInfo.textContent = `表示中: ${visibleCount} 件`;
+  } else if (paginationInfo) {
+    paginationInfo.textContent = '該当する履歴が見つかりません';
+  }
+}
+
+function handleHistoryAction(action, title, row) {
+  switch(action) {
+    case '詳細':
+      // Show delivery details modal or navigate to details page
+      console.log('詳細表示:', title);
+      alert(`${title} の詳細を表示します（実装予定）`);
+      break;
+    case '停止':
+      // Stop ongoing delivery
+      console.log('停止:', title);
+      if (confirm(`${title} の配信を停止しますか？`)) {
+        const statusBadge = row.querySelector('.status-badge');
+        if (statusBadge) {
+          statusBadge.textContent = '停止';
+          statusBadge.className = 'status-badge status-error';
+        }
+        // Update action button
+        const actionBtn = row.querySelector('.btn-secondary');
+        if (actionBtn && actionBtn.textContent.trim() === '停止') {
+          actionBtn.textContent = '再開';
+          actionBtn.className = 'btn btn-primary btn-sm';
+        }
+      }
+      break;
+    case '再開':
+      // Resume stopped delivery
+      console.log('再開:', title);
+      if (confirm(`${title} の配信を再開しますか？`)) {
+        const statusBadge = row.querySelector('.status-badge');
+        if (statusBadge) {
+          statusBadge.textContent = '進行中';
+          statusBadge.className = 'status-badge status-progress';
+        }
+        // Update action button
+        const actionBtn = row.querySelector('.btn-primary');
+        if (actionBtn && actionBtn.textContent.trim() === '再開') {
+          actionBtn.textContent = '停止';
+          actionBtn.className = 'btn btn-secondary btn-sm';
+        }
+      }
+      break;
+    default:
+      console.log('Unknown action:', action);
+  }
 }
 
 // Statistics animation (optional enhancement)
@@ -289,8 +406,15 @@ navigateToPage = function(pageId) {
     case 'broadcast':
       initializeBroadcastForm();
       break;
+    case 'step':
+      initializeScenarioModal();
+      initializeScenarioEditModal();
+      break;
     case 'individual':
       initializeIndividualSupport();
+      break;
+    case 'history':
+      initializeHistoryPage();
       break;
     case 'settings':
       initializeSettings();
@@ -378,3 +502,528 @@ handleLogin = function(e) {
 
   originalHandleLogin(e);
 };
+
+// Chat functionality
+let currentChatUser = null;
+
+function openChat(friendName, friendId, friendAvatar) {
+  currentChatUser = { name: friendName, id: friendId, avatar: friendAvatar };
+
+  // Update chat header with friend info
+  document.getElementById('chat-user-name').textContent = friendName;
+  document.getElementById('chat-user-id').textContent = friendId;
+  document.getElementById('chat-avatar').textContent = friendAvatar;
+
+  // Show chat modal
+  const chatModal = document.getElementById('chat-modal');
+  chatModal.style.display = 'flex';
+
+  // Clear input and focus
+  const chatInput = document.getElementById('chat-input');
+  chatInput.value = '';
+  setTimeout(() => chatInput.focus(), 100);
+
+  // Scroll to bottom of messages
+  scrollToBottom();
+
+  // Initialize chat event listeners if not already done
+  initializeChatEventListeners();
+}
+
+function closeChat() {
+  const chatModal = document.getElementById('chat-modal');
+  chatModal.style.display = 'none';
+  currentChatUser = null;
+}
+
+function initializeChatEventListeners() {
+  // Prevent multiple event listeners
+  if (window.chatEventListenersInitialized) return;
+  window.chatEventListenersInitialized = true;
+
+  // Close button
+  document.getElementById('chat-close-btn').addEventListener('click', closeChat);
+
+  // Send button
+  document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
+
+  // Enter key to send (Shift+Enter for new line)
+  document.getElementById('chat-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  // Close modal when clicking outside
+  document.getElementById('chat-modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeChat();
+    }
+  });
+
+  // Auto-resize textarea
+  document.getElementById('chat-input').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+  });
+}
+
+function sendMessage() {
+  const chatInput = document.getElementById('chat-input');
+  const messageText = chatInput.value.trim();
+
+  if (!messageText) return;
+
+  // Create message element
+  const message = createMessageElement(messageText, true);
+
+  // Add to chat messages
+  const chatMessages = document.getElementById('chat-messages');
+  chatMessages.appendChild(message);
+
+  // Clear input and reset height
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+
+  // Scroll to bottom
+  scrollToBottom();
+
+  // Simulate auto-reply after 1-3 seconds (for demo purposes)
+  setTimeout(() => {
+    simulateAutoReply(messageText);
+  }, Math.random() * 2000 + 1000);
+}
+
+function createMessageElement(text, isSent = false, timestamp = null) {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message ${isSent ? 'message-sent' : 'message-received'}`;
+
+  const now = timestamp || new Date();
+  const timeString = now.toLocaleString('ja-JP', {
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).replace(/\//g, '-');
+
+  messageDiv.innerHTML = `
+    <div class="message-content">
+      <div class="message-text">${escapeHtml(text)}</div>
+      <div class="message-time">${timeString}</div>
+    </div>
+  `;
+
+  return messageDiv;
+}
+
+function simulateAutoReply(originalMessage) {
+  // Simple auto-reply logic for demo
+  let replyText = '';
+
+  if (originalMessage.includes('こんにちは') || originalMessage.includes('こんばんは')) {
+    replyText = 'こんにちは！お疲れ様です。';
+  } else if (originalMessage.includes('ありがとう')) {
+    replyText = 'どういたしまして！他にご質問はございますか？';
+  } else if (originalMessage.includes('商品') || originalMessage.includes('製品')) {
+    replyText = '商品についてご質問ですね。詳しくご説明させていただきます。';
+  } else if (originalMessage.includes('価格') || originalMessage.includes('値段')) {
+    replyText = '価格についてご案内いたします。詳細をお送りしますね。';
+  } else if (originalMessage.includes('配送') || originalMessage.includes('発送')) {
+    replyText = '配送について確認いたします。少々お待ちください。';
+  } else {
+    const responses = [
+      'ご連絡ありがとうございます。確認いたします。',
+      '承知いたしました。詳細をお調べいたします。',
+      'お返事ありがとうございます。対応させていただきます。',
+      'ご質問いただき、ありがとうございます。',
+      'すぐに確認して、ご連絡いたします。'
+    ];
+    replyText = responses[Math.floor(Math.random() * responses.length)];
+  }
+
+  // Add reply message
+  const replyMessage = createMessageElement(replyText, false);
+  const chatMessages = document.getElementById('chat-messages');
+  chatMessages.appendChild(replyMessage);
+
+  // Scroll to bottom
+  scrollToBottom();
+}
+
+function scrollToBottom() {
+  const chatMessages = document.getElementById('chat-messages');
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// New Scenario Creation Modal functionality
+let scenarioModalInitialized = false;
+
+function initializeScenarioModal() {
+  if (scenarioModalInitialized) return;
+  scenarioModalInitialized = true;
+
+  const modal = document.getElementById('scenario-modal');
+  const closeBtn = document.getElementById('scenario-close-btn');
+  const cancelBtn = document.getElementById('scenario-cancel-btn');
+  const createBtn = document.getElementById('scenario-create-btn');
+  const deliveryTimingRadios = document.querySelectorAll('input[name="deliveryTiming"]');
+  const datetimeGroup = document.getElementById('datetime-group');
+
+  // Open modal
+  const newScenarioBtn = document.querySelector('#step-page .btn-primary');
+  if (newScenarioBtn) {
+    newScenarioBtn.addEventListener('click', function() {
+      openScenarioModal();
+    });
+  }
+
+  // Close modal events
+  closeBtn.addEventListener('click', closeScenarioModal);
+  cancelBtn.addEventListener('click', closeScenarioModal);
+
+  // Close modal when clicking outside
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      closeScenarioModal();
+    }
+  });
+
+  // Delivery timing change handler
+  deliveryTimingRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+      handleDeliveryTimingChange(this.value);
+    });
+  });
+
+  // Create scenario handler
+  createBtn.addEventListener('click', handleScenarioCreation);
+
+  // Add input event listeners for real-time preview
+  const daysInput = document.getElementById('scenario-days');
+  const timeInput = document.getElementById('scenario-time');
+
+  if (daysInput) {
+    daysInput.addEventListener('input', updateTimingPreview);
+  }
+  if (timeInput) {
+    timeInput.addEventListener('input', updateTimingPreview);
+  }
+}
+
+function openScenarioModal() {
+  const modal = document.getElementById('scenario-modal');
+  modal.style.display = 'flex';
+
+  // Reset form
+  document.getElementById('scenario-name').value = '';
+  document.getElementById('scenario-description').value = '';
+  document.querySelector('input[name="deliveryTiming"][value="immediate"]').checked = true;
+  document.getElementById('scenario-days').value = '0';
+  document.getElementById('scenario-time').value = '09:00';
+  document.getElementById('scheduled-group').style.display = 'none';
+
+  // Reset preview
+  updateTimingPreview();
+
+  // Focus on scenario name input
+  setTimeout(() => {
+    document.getElementById('scenario-name').focus();
+  }, 100);
+}
+
+function closeScenarioModal() {
+  const modal = document.getElementById('scenario-modal');
+  modal.style.display = 'none';
+}
+
+function handleDeliveryTimingChange(timing) {
+  const scheduledGroup = document.getElementById('scheduled-group');
+
+  if (timing === 'scheduled') {
+    scheduledGroup.style.display = 'block';
+    // Initialize preview
+    updateTimingPreview();
+  } else {
+    scheduledGroup.style.display = 'none';
+  }
+}
+
+function handleScenarioCreation() {
+  const scenarioName = document.getElementById('scenario-name').value.trim();
+  const scenarioDescription = document.getElementById('scenario-description').value.trim();
+  const deliveryTiming = document.querySelector('input[name="deliveryTiming"]:checked').value;
+  const scheduledDays = document.getElementById('scenario-days').value;
+  const scheduledTime = document.getElementById('scenario-time').value;
+
+  // Validation
+  if (!scenarioName) {
+    alert('シナリオ名を入力してください');
+    return;
+  }
+
+  if (deliveryTiming === 'scheduled') {
+    if (!scheduledDays || scheduledDays < 0 || scheduledDays > 30) {
+      alert('経過日数を0〜30日の範囲で指定してください');
+      return;
+    }
+    if (!scheduledTime) {
+      alert('配信時間を指定してください');
+      return;
+    }
+  }
+
+  // Create scenario object
+  const newScenario = {
+    name: scenarioName,
+    description: scenarioDescription,
+    deliveryTiming: deliveryTiming,
+    scheduledDays: deliveryTiming === 'scheduled' ? parseInt(scheduledDays) : null,
+    scheduledTime: deliveryTiming === 'scheduled' ? scheduledTime : null,
+    createdAt: new Date().toISOString()
+  };
+
+  console.log('Creating new scenario:', newScenario);
+
+  // Show success message with timing info
+  let successMessage = `シナリオ「${scenarioName}」を作成しました！`;
+  if (deliveryTiming === 'scheduled') {
+    successMessage += `\n配信タイミング: ステップ開始から${scheduledDays}日後の${scheduledTime}`;
+  }
+  alert(successMessage);
+
+  // Close modal
+  closeScenarioModal();
+
+  // Here you would typically send the data to the server
+  // and refresh the scenarios list
+}
+
+// Update timing preview function
+function updateTimingPreview() {
+  const daysInput = document.getElementById('scenario-days');
+  const timeInput = document.getElementById('scenario-time');
+  const previewDays = document.getElementById('preview-days');
+  const previewTime = document.getElementById('preview-time');
+
+  if (daysInput && timeInput && previewDays && previewTime) {
+    const days = daysInput.value || '0';
+    const time = timeInput.value || '09:00';
+
+    previewDays.textContent = days;
+    previewTime.textContent = time;
+  }
+}
+
+// Update timing preview function for edit modal
+function updateEditTimingPreview() {
+  const daysInput = document.getElementById('edit-scenario-days');
+  const timeInput = document.getElementById('edit-scenario-time');
+  const previewDays = document.getElementById('edit-preview-days');
+  const previewTime = document.getElementById('edit-preview-time');
+
+  if (daysInput && timeInput && previewDays && previewTime) {
+    const days = daysInput.value || '0';
+    const time = timeInput.value || '09:00';
+
+    previewDays.textContent = days;
+    previewTime.textContent = time;
+  }
+}
+
+// Scenario Edit Modal functionality
+let scenarioEditModalInitialized = false;
+let currentEditScenarioId = null;
+
+function initializeScenarioEditModal() {
+  if (scenarioEditModalInitialized) return;
+  scenarioEditModalInitialized = true;
+
+  const modal = document.getElementById('scenario-edit-modal');
+  const closeBtn = document.getElementById('scenario-edit-close-btn');
+  const cancelBtn = document.getElementById('scenario-edit-cancel-btn');
+  const saveBtn = document.getElementById('scenario-edit-save-btn');
+  const editDeliveryTimingRadios = document.querySelectorAll('input[name="editDeliveryTiming"]');
+
+  // Edit button event listeners
+  const editButtons = document.querySelectorAll('.scenario-edit-btn');
+  editButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const scenarioCard = this.closest('.scenario-card');
+      if (scenarioCard) {
+        openScenarioEditModal(scenarioCard);
+      }
+    });
+  });
+
+  // Close modal events
+  closeBtn.addEventListener('click', closeScenarioEditModal);
+  cancelBtn.addEventListener('click', closeScenarioEditModal);
+
+  // Close modal when clicking outside
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      closeScenarioEditModal();
+    }
+  });
+
+  // Delivery timing change handler
+  editDeliveryTimingRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+      handleEditDeliveryTimingChange(this.value);
+    });
+  });
+
+  // Save scenario handler
+  saveBtn.addEventListener('click', handleScenarioUpdate);
+
+  // Add input event listeners for real-time preview
+  const editDaysInput = document.getElementById('edit-scenario-days');
+  const editTimeInput = document.getElementById('edit-scenario-time');
+
+  if (editDaysInput) {
+    editDaysInput.addEventListener('input', updateEditTimingPreview);
+  }
+  if (editTimeInput) {
+    editTimeInput.addEventListener('input', updateEditTimingPreview);
+  }
+}
+
+function openScenarioEditModal(scenarioCard) {
+  const modal = document.getElementById('scenario-edit-modal');
+
+  // Get scenario data from attributes
+  currentEditScenarioId = scenarioCard.getAttribute('data-scenario-id');
+  const scenarioName = scenarioCard.getAttribute('data-scenario-name');
+  const scenarioDescription = scenarioCard.getAttribute('data-scenario-description');
+  const deliveryTiming = scenarioCard.getAttribute('data-delivery-timing');
+  const scheduledDays = scenarioCard.getAttribute('data-scheduled-days') || '0';
+  const scheduledTime = scenarioCard.getAttribute('data-scheduled-time') || '09:00';
+
+  // Populate form with existing data
+  document.getElementById('edit-scenario-name').value = scenarioName;
+  document.getElementById('edit-scenario-description').value = scenarioDescription;
+
+  // Set delivery timing
+  document.querySelector(`input[name="editDeliveryTiming"][value="${deliveryTiming}"]`).checked = true;
+
+  if (deliveryTiming === 'scheduled') {
+    document.getElementById('edit-scenario-days').value = scheduledDays;
+    document.getElementById('edit-scenario-time').value = scheduledTime;
+    document.getElementById('edit-scheduled-group').style.display = 'block';
+  } else {
+    document.getElementById('edit-scheduled-group').style.display = 'none';
+  }
+
+  // Update preview
+  updateEditTimingPreview();
+
+  // Show modal
+  modal.style.display = 'flex';
+
+  // Focus on scenario name input
+  setTimeout(() => {
+    document.getElementById('edit-scenario-name').focus();
+  }, 100);
+}
+
+function closeScenarioEditModal() {
+  const modal = document.getElementById('scenario-edit-modal');
+  modal.style.display = 'none';
+  currentEditScenarioId = null;
+}
+
+function handleEditDeliveryTimingChange(timing) {
+  const scheduledGroup = document.getElementById('edit-scheduled-group');
+
+  if (timing === 'scheduled') {
+    scheduledGroup.style.display = 'block';
+    updateEditTimingPreview();
+  } else {
+    scheduledGroup.style.display = 'none';
+  }
+}
+
+function handleScenarioUpdate() {
+  const scenarioName = document.getElementById('edit-scenario-name').value.trim();
+  const scenarioDescription = document.getElementById('edit-scenario-description').value.trim();
+  const deliveryTiming = document.querySelector('input[name="editDeliveryTiming"]:checked').value;
+  const scheduledDays = document.getElementById('edit-scenario-days').value;
+  const scheduledTime = document.getElementById('edit-scenario-time').value;
+
+  // Validation
+  if (!scenarioName) {
+    alert('シナリオ名を入力してください');
+    return;
+  }
+
+  if (deliveryTiming === 'scheduled') {
+    if (!scheduledDays || scheduledDays < 0 || scheduledDays > 30) {
+      alert('経過日数を0〜30日の範囲で指定してください');
+      return;
+    }
+    if (!scheduledTime) {
+      alert('配信時間を指定してください');
+      return;
+    }
+  }
+
+  // Update scenario object
+  const updatedScenario = {
+    id: currentEditScenarioId,
+    name: scenarioName,
+    description: scenarioDescription,
+    deliveryTiming: deliveryTiming,
+    scheduledDays: deliveryTiming === 'scheduled' ? parseInt(scheduledDays) : null,
+    scheduledTime: deliveryTiming === 'scheduled' ? scheduledTime : null,
+    updatedAt: new Date().toISOString()
+  };
+
+  console.log('Updating scenario:', updatedScenario);
+
+  // Update the scenario card in the UI
+  updateScenarioCardInUI(updatedScenario);
+
+  // Show success message
+  let successMessage = `シナリオ「${scenarioName}」を更新しました！`;
+  if (deliveryTiming === 'scheduled') {
+    successMessage += `\n配信タイミング: ステップ開始から${scheduledDays}日後の${scheduledTime}`;
+  }
+  alert(successMessage);
+
+  // Close modal
+  closeScenarioEditModal();
+
+  // Here you would typically send the data to the server
+}
+
+function updateScenarioCardInUI(scenario) {
+  const scenarioCard = document.querySelector(`[data-scenario-id="${scenario.id}"]`);
+  if (scenarioCard) {
+    // Update data attributes
+    scenarioCard.setAttribute('data-scenario-name', scenario.name);
+    scenarioCard.setAttribute('data-scenario-description', scenario.description);
+    scenarioCard.setAttribute('data-delivery-timing', scenario.deliveryTiming);
+
+    if (scenario.deliveryTiming === 'scheduled') {
+      scenarioCard.setAttribute('data-scheduled-days', scenario.scheduledDays);
+      scenarioCard.setAttribute('data-scheduled-time', scenario.scheduledTime);
+    } else {
+      scenarioCard.removeAttribute('data-scheduled-days');
+      scenarioCard.removeAttribute('data-scheduled-time');
+    }
+
+    // Update visible elements
+    const nameElement = scenarioCard.querySelector('.scenario-header h3');
+    const descriptionElement = scenarioCard.querySelector('.scenario-description');
+
+    if (nameElement) nameElement.textContent = scenario.name;
+    if (descriptionElement) descriptionElement.textContent = scenario.description;
+  }
+}
