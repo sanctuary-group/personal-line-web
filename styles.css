@@ -1291,3 +1291,132 @@ body {
     gap: 15px;
   }
 }
+
+/* Friend Selection UI Styles */
+.friend-selection-container {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 10px;
+}
+
+.friend-selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 15px;
+  gap: 15px;
+}
+
+.friend-selection-header .search-box {
+  flex: 1;
+  max-width: 300px;
+}
+
+.selection-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.selected-count {
+  background: #e8f5e8;
+  color: #00b900;
+  padding: 10px 15px;
+  border-radius: 6px;
+  border-left: 4px solid #00b900;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.friends-selection-list {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+}
+
+.friend-selection-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.friend-selection-item:hover {
+  background-color: #f8f9fa;
+}
+
+.friend-selection-item:last-child {
+  border-bottom: none;
+}
+
+.friend-selection-item.selected {
+  background-color: #e8f5e8;
+  border-left: 3px solid #00b900;
+}
+
+.friend-checkbox {
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.friend-selection-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.friend-selection-name {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.friend-selection-id {
+  color: #666;
+  font-size: 14px;
+}
+
+.friend-selection-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #00b900;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+/* Responsive styles for friend selection */
+@media (max-width: 768px) {
+  .friend-selection-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .friend-selection-header .search-box {
+    max-width: none;
+  }
+
+  .selection-actions {
+    justify-content: flex-start;
+  }
+
+  .friend-selection-item {
+    padding: 10px 12px;
+  }
+
+  .friend-selection-avatar {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+}

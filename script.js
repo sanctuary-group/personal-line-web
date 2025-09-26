@@ -173,6 +173,16 @@ function initializeBroadcastForm() {
       handleTargetChange(this.value);
     });
   });
+
+  // Reset friend selection state when broadcast page is loaded
+  friendSelectionInitialized = false;
+  selectedFriends.clear();
+
+  // Hide friend selection area initially
+  const friendSelectionArea = document.getElementById('friend-selection-area');
+  if (friendSelectionArea) {
+    friendSelectionArea.style.display = 'none';
+  }
 }
 
 function handleMessageTypeChange(type) {
@@ -181,7 +191,17 @@ function handleMessageTypeChange(type) {
 }
 
 function handleTargetChange(target) {
-  // Here you would show/hide segment/tag selection
+  const friendSelectionArea = document.getElementById('friend-selection-area');
+
+  if (target === 'segment') {
+    // セグメント選択時は友達選択UIを表示
+    friendSelectionArea.style.display = 'block';
+    initializeFriendSelection();
+  } else {
+    // その他の場合は非表示
+    friendSelectionArea.style.display = 'none';
+  }
+
   console.log("Target changed to:", target);
 }
 
@@ -712,7 +732,6 @@ function initializeScenarioModal() {
   const deliveryTimingRadios = document.querySelectorAll(
     'input[name="deliveryTiming"]'
   );
-  const datetimeGroup = document.getElementById("datetime-group");
 
   // Open modal
   const newScenarioBtn = document.querySelector("#step-page .btn-primary");
@@ -1094,4 +1113,186 @@ function updateScenarioCardInUI(scenario) {
     if (descriptionElement)
       descriptionElement.textContent = scenario.description;
   }
+}
+
+// Friend Selection functionality
+let friendsData = [];
+let selectedFriends = new Set();
+let friendSelectionInitialized = false;
+
+// Sample friends data (in a real app, this would come from an API)
+const sampleFriendsData = [
+  { id: 'U001234', name: '田中太郎', avatar: '田' },
+  { id: 'U005678', name: '佐藤花子', avatar: '佐' },
+  { id: 'U009876', name: '山田次郎', avatar: '山' },
+  { id: 'U005432', name: '鈴木美咲', avatar: '鈴' },
+  { id: 'U001122', name: '高橋健太', avatar: '高' },
+  { id: 'U003344', name: '伊藤麻衣', avatar: '伊' },
+  { id: 'U005566', name: '渡辺晴彦', avatar: '渡' },
+  { id: 'U007788', name: '中村優子', avatar: '中' },
+  { id: 'U009900', name: '小林大輔', avatar: '小' },
+  { id: 'U001199', name: '加藤美穂', avatar: '加' }
+];
+
+function initializeFriendSelection() {
+  if (friendSelectionInitialized) return;
+  friendSelectionInitialized = true;
+
+  // Initialize friends data
+  friendsData = [...sampleFriendsData];
+  selectedFriends.clear();
+
+  // Render friends list
+  renderFriendsList();
+
+  // Set up event listeners
+  setupFriendSelectionEventListeners();
+}
+
+function setupFriendSelectionEventListeners() {
+  const searchInput = document.getElementById('friend-search');
+  const selectAllBtn = document.getElementById('select-all-friends');
+  const deselectAllBtn = document.getElementById('deselect-all-friends');
+
+  // Search functionality
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      filterFriendsList(searchTerm);
+    });
+  }
+
+  // Select all button
+  if (selectAllBtn) {
+    selectAllBtn.addEventListener('click', function() {
+      selectAllVisibleFriends();
+    });
+  }
+
+  // Deselect all button
+  if (deselectAllBtn) {
+    deselectAllBtn.addEventListener('click', function() {
+      deselectAllFriends();
+    });
+  }
+}
+
+function renderFriendsList(filteredFriends = null) {
+  const friendsList = document.getElementById('friends-selection-list');
+  if (!friendsList) return;
+
+  const friendsToRender = filteredFriends || friendsData;
+
+  friendsList.innerHTML = '';
+
+  friendsToRender.forEach(friend => {
+    const friendItem = createFriendSelectionItem(friend);
+    friendsList.appendChild(friendItem);
+  });
+
+  updateSelectedCount();
+}
+
+function createFriendSelectionItem(friend) {
+  const itemDiv = document.createElement('div');
+  itemDiv.className = 'friend-selection-item';
+  itemDiv.setAttribute('data-friend-id', friend.id);
+
+  const isSelected = selectedFriends.has(friend.id);
+  if (isSelected) {
+    itemDiv.classList.add('selected');
+  }
+
+  itemDiv.innerHTML = `
+    <input type="checkbox" class="friend-checkbox" ${isSelected ? 'checked' : ''}>
+    <div class="friend-selection-avatar">${friend.avatar}</div>
+    <div class="friend-selection-info">
+      <div class="friend-selection-name">${friend.name}</div>
+      <div class="friend-selection-id">ID: ${friend.id}</div>
+    </div>
+  `;
+
+  // Add click event listener
+  itemDiv.addEventListener('click', function() {
+    toggleFriendSelection(friend.id);
+  });
+
+  // Prevent checkbox click from bubbling
+  const checkbox = itemDiv.querySelector('.friend-checkbox');
+  checkbox.addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleFriendSelection(friend.id);
+  });
+
+  return itemDiv;
+}
+
+function toggleFriendSelection(friendId) {
+  const friendItem = document.querySelector(`[data-friend-id="${friendId}"]`);
+  const checkbox = friendItem.querySelector('.friend-checkbox');
+
+  if (selectedFriends.has(friendId)) {
+    selectedFriends.delete(friendId);
+    friendItem.classList.remove('selected');
+    checkbox.checked = false;
+  } else {
+    selectedFriends.add(friendId);
+    friendItem.classList.add('selected');
+    checkbox.checked = true;
+  }
+
+  updateSelectedCount();
+}
+
+function selectAllVisibleFriends() {
+  const visibleItems = document.querySelectorAll('.friend-selection-item');
+
+  visibleItems.forEach(item => {
+    const friendId = item.getAttribute('data-friend-id');
+    if (!selectedFriends.has(friendId)) {
+      selectedFriends.add(friendId);
+      item.classList.add('selected');
+      item.querySelector('.friend-checkbox').checked = true;
+    }
+  });
+
+  updateSelectedCount();
+}
+
+function deselectAllFriends() {
+  selectedFriends.clear();
+
+  const allItems = document.querySelectorAll('.friend-selection-item');
+  allItems.forEach(item => {
+    item.classList.remove('selected');
+    item.querySelector('.friend-checkbox').checked = false;
+  });
+
+  updateSelectedCount();
+}
+
+function filterFriendsList(searchTerm) {
+  if (!searchTerm.trim()) {
+    renderFriendsList();
+    return;
+  }
+
+  const filteredFriends = friendsData.filter(friend =>
+    friend.name.toLowerCase().includes(searchTerm) ||
+    friend.id.toLowerCase().includes(searchTerm)
+  );
+
+  renderFriendsList(filteredFriends);
+}
+
+function updateSelectedCount() {
+  const countElement = document.getElementById('selected-friends-count');
+  if (countElement) {
+    countElement.textContent = selectedFriends.size;
+  }
+}
+
+// Helper function to get selected friends data
+function getSelectedFriendsData() {
+  return friendsData.filter(friend => selectedFriends.has(friend.id));
 }

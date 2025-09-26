@@ -236,6 +236,39 @@
                   </label>
                 </div>
               </div>
+
+              <!-- 友達選択エリア（セグメント選択時に表示） -->
+              <div id="friend-selection-area" class="form-group" style="display: none;">
+                <label class="form-label">送信先友達を選択</label>
+                <div class="friend-selection-container">
+                  <div class="friend-selection-header">
+                    <div class="search-box">
+                      <input
+                        type="text"
+                        id="friend-search"
+                        class="form-input"
+                        placeholder="友達名で検索..."
+                      />
+                    </div>
+                    <div class="selection-actions">
+                      <button type="button" class="btn btn-outline btn-sm" id="select-all-friends">
+                        全選択
+                      </button>
+                      <button type="button" class="btn btn-outline btn-sm" id="deselect-all-friends">
+                        全解除
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="selected-count">
+                    選択中: <span id="selected-friends-count">0</span> 人
+                  </div>
+
+                  <div class="friends-selection-list" id="friends-selection-list">
+                    <!-- 友達リストがここに動的に生成される -->
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="card">
