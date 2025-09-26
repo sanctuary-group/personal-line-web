@@ -1,25 +1,25 @@
 // Application State
 let currentUser = null;
-let currentPage = 'dashboard';
+let currentPage = "dashboard";
 
 // DOM Elements
-const loginContainer = document.getElementById('login-container');
-const mainApp = document.getElementById('main-app');
-const loginForm = document.getElementById('login-form');
-const loginBtn = document.getElementById('login-btn');
-const errorMessage = document.getElementById('error-message');
-const logoutBtn = document.getElementById('logout-btn');
-const navItems = document.querySelectorAll('.nav-item');
-const pages = document.querySelectorAll('.page');
+const loginContainer = document.getElementById("login-container");
+const mainApp = document.getElementById("main-app");
+const loginForm = document.getElementById("login-form");
+const loginBtn = document.getElementById("login-btn");
+const errorMessage = document.getElementById("error-message");
+const logoutBtn = document.getElementById("logout-btn");
+const navItems = document.querySelectorAll(".nav-item");
+const pages = document.querySelectorAll(".page");
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
   initializeApp();
 });
 
 function initializeApp() {
   // Check if user is already logged in (simplified check)
-  const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
 
   if (isLoggedIn) {
     showMainApp();
@@ -32,33 +32,33 @@ function initializeApp() {
 
 function setupEventListeners() {
   // Login form submission
-  loginForm.addEventListener('submit', handleLogin);
+  loginForm.addEventListener("submit", handleLogin);
 
   // Logout button
-  logoutBtn.addEventListener('click', handleLogout);
+  logoutBtn.addEventListener("click", handleLogout);
 
   // Navigation items
-  navItems.forEach(item => {
-    item.addEventListener('click', function() {
-      const page = this.getAttribute('data-page');
+  navItems.forEach((item) => {
+    item.addEventListener("click", function () {
+      const page = this.getAttribute("data-page");
       navigateToPage(page);
     });
   });
 
   // Quick action buttons
-  const quickActionBtns = document.querySelectorAll('[data-navigate]');
-  quickActionBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
-      const page = this.getAttribute('data-navigate');
+  const quickActionBtns = document.querySelectorAll("[data-navigate]");
+  quickActionBtns.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const page = this.getAttribute("data-navigate");
       navigateToPage(page);
     });
   });
 
   // Back to dashboard buttons
   const backBtns = document.querySelectorAll('[data-navigate="dashboard"]');
-  backBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
-      navigateToPage('dashboard');
+  backBtns.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      navigateToPage("dashboard");
     });
   });
 }
@@ -66,63 +66,63 @@ function setupEventListeners() {
 function handleLogin(e) {
   e.preventDefault();
 
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
   // Show loading state
-  loginBtn.textContent = 'ログイン中...';
+  loginBtn.textContent = "ログイン中...";
   loginBtn.disabled = true;
   hideError();
 
   // Simulate API call
   setTimeout(() => {
-    if (email === 'admin@example.com' && password === 'password') {
+    if (email === "admin@example.com" && password === "password") {
       // Successful login
       currentUser = { email: email };
-      sessionStorage.setItem('isLoggedIn', 'true');
-      sessionStorage.setItem('userEmail', email);
+      sessionStorage.setItem("isLoggedIn", "true");
+      sessionStorage.setItem("userEmail", email);
       showMainApp();
     } else {
       // Failed login
-      showError('メールアドレスまたはパスワードが正しくありません');
+      showError("メールアドレスまたはパスワードが正しくありません");
     }
 
     // Reset button state
-    loginBtn.textContent = 'ログイン';
+    loginBtn.textContent = "ログイン";
     loginBtn.disabled = false;
   }, 1000);
 }
 
 function handleLogout() {
   currentUser = null;
-  sessionStorage.removeItem('isLoggedIn');
-  sessionStorage.removeItem('userEmail');
+  sessionStorage.removeItem("isLoggedIn");
+  sessionStorage.removeItem("userEmail");
   showLoginScreen();
 
   // Reset form
-  document.getElementById('email').value = '';
-  document.getElementById('password').value = '';
+  document.getElementById("email").value = "";
+  document.getElementById("password").value = "";
   hideError();
 }
 
 function showLoginScreen() {
-  loginContainer.style.display = 'flex';
-  mainApp.style.display = 'none';
+  loginContainer.style.display = "flex";
+  mainApp.style.display = "none";
 }
 
 function showMainApp() {
-  loginContainer.style.display = 'none';
-  mainApp.style.display = 'grid';
-  navigateToPage('dashboard');
+  loginContainer.style.display = "none";
+  mainApp.style.display = "grid";
+  navigateToPage("dashboard");
 }
 
 function showError(message) {
   errorMessage.textContent = message;
-  errorMessage.style.display = 'block';
+  errorMessage.style.display = "block";
 }
 
 function hideError() {
-  errorMessage.style.display = 'none';
+  errorMessage.style.display = "none";
 }
 
 function navigateToPage(pageId) {
@@ -130,44 +130,46 @@ function navigateToPage(pageId) {
   currentPage = pageId;
 
   // Hide all pages
-  pages.forEach(page => {
-    page.classList.remove('active');
-    page.style.display = 'none';
+  pages.forEach((page) => {
+    page.classList.remove("active");
+    page.style.display = "none";
   });
 
   // Show selected page
-  const targetPage = document.getElementById(pageId + '-page');
+  const targetPage = document.getElementById(pageId + "-page");
   if (targetPage) {
-    targetPage.classList.add('active');
-    targetPage.style.display = 'block';
+    targetPage.classList.add("active");
+    targetPage.style.display = "block";
   }
 
   // Update navigation active state
-  navItems.forEach(item => {
-    item.classList.remove('active');
+  navItems.forEach((item) => {
+    item.classList.remove("active");
   });
 
   const activeNavItem = document.querySelector(`[data-page="${pageId}"]`);
   if (activeNavItem) {
-    activeNavItem.classList.add('active');
+    activeNavItem.classList.add("active");
   }
 }
 
 // Broadcast form functionality
 function initializeBroadcastForm() {
-  const messageTypeRadios = document.querySelectorAll('input[name="messageType"]');
+  const messageTypeRadios = document.querySelectorAll(
+    'input[name="messageType"]'
+  );
   const targetRadios = document.querySelectorAll('input[name="target"]');
 
   // Handle message type changes
-  messageTypeRadios.forEach(radio => {
-    radio.addEventListener('change', function() {
+  messageTypeRadios.forEach((radio) => {
+    radio.addEventListener("change", function () {
       handleMessageTypeChange(this.value);
     });
   });
 
   // Handle target changes
-  targetRadios.forEach(radio => {
-    radio.addEventListener('change', function() {
+  targetRadios.forEach((radio) => {
+    radio.addEventListener("change", function () {
       handleTargetChange(this.value);
     });
   });
@@ -175,33 +177,41 @@ function initializeBroadcastForm() {
 
 function handleMessageTypeChange(type) {
   // Only text messages are supported
-  console.log('Message type changed to:', type);
+  console.log("Message type changed to:", type);
 }
 
 function handleTargetChange(target) {
   // Here you would show/hide segment/tag selection
-  console.log('Target changed to:', target);
+  console.log("Target changed to:", target);
 }
 
 // Individual support functionality
 function initializeIndividualSupport() {
-  const searchInput = document.querySelector('#individual-page .search-box input');
+  const searchInput = document.querySelector(
+    "#individual-page .search-box input"
+  );
 
   if (searchInput) {
-    searchInput.addEventListener('input', function() {
+    searchInput.addEventListener("input", function () {
       filterFriends(this.value);
     });
   }
 
   // Message buttons
-  const messageBtns = document.querySelectorAll('.friend-actions .btn-primary');
-  messageBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
-      const friendItem = this.closest('.friend-item');
+  const messageBtns = document.querySelectorAll(".friend-actions .btn-primary");
+  messageBtns.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const friendItem = this.closest(".friend-item");
       if (friendItem) {
-        const friendName = friendItem.querySelector('.friend-name').textContent.trim();
-        const friendId = friendItem.querySelector('.friend-id').textContent.trim();
-        const friendAvatar = friendItem.querySelector('.friend-avatar').textContent.trim();
+        const friendName = friendItem
+          .querySelector(".friend-name")
+          .textContent.trim();
+        const friendId = friendItem
+          .querySelector(".friend-id")
+          .textContent.trim();
+        const friendAvatar = friendItem
+          .querySelector(".friend-avatar")
+          .textContent.trim();
         openChat(friendName, friendId, friendAvatar);
       }
     });
@@ -210,56 +220,56 @@ function initializeIndividualSupport() {
 
 function filterFriends(searchTerm) {
   // Here you would implement friend filtering logic
-  console.log('Filtering friends:', searchTerm);
+  console.log("Filtering friends:", searchTerm);
 }
 
 // Settings functionality
 function initializeSettings() {
-  const saveButtons = document.querySelectorAll('#settings-page .btn-primary');
+  const saveButtons = document.querySelectorAll("#settings-page .btn-primary");
 
-  saveButtons.forEach(btn => {
-    btn.addEventListener('click', function() {
+  saveButtons.forEach((btn) => {
+    btn.addEventListener("click", function () {
       // Here you would implement settings save
-      console.log('Saving settings...');
+      console.log("Saving settings...");
 
       // Show success message (simplified)
-      alert('設定を保存しました');
+      alert("設定を保存しました");
     });
   });
 }
 
 // History page functionality
 function initializeHistoryPage() {
-  const searchInput = document.getElementById('history-search');
-  const typeFilter = document.getElementById('history-type-filter');
-  const statusFilter = document.getElementById('history-status-filter');
+  const searchInput = document.getElementById("history-search");
+  const typeFilter = document.getElementById("history-type-filter");
+  const statusFilter = document.getElementById("history-status-filter");
 
   if (searchInput) {
-    searchInput.addEventListener('input', function() {
+    searchInput.addEventListener("input", function () {
       filterHistoryTable();
     });
   }
 
   if (typeFilter) {
-    typeFilter.addEventListener('change', function() {
+    typeFilter.addEventListener("change", function () {
       filterHistoryTable();
     });
   }
 
   if (statusFilter) {
-    statusFilter.addEventListener('change', function() {
+    statusFilter.addEventListener("change", function () {
       filterHistoryTable();
     });
   }
 
   // Initialize action buttons
-  const actionButtons = document.querySelectorAll('#history-table .btn');
-  actionButtons.forEach(btn => {
-    btn.addEventListener('click', function(e) {
+  const actionButtons = document.querySelectorAll("#history-table .btn");
+  actionButtons.forEach((btn) => {
+    btn.addEventListener("click", function (e) {
       e.preventDefault();
       const action = this.textContent.trim();
-      const row = this.closest('tr');
-      const title = row.querySelector('td:first-child').textContent.trim();
+      const row = this.closest("tr");
+      const title = row.querySelector("td:first-child").textContent.trim();
 
       handleHistoryAction(action, title, row);
     });
@@ -267,97 +277,101 @@ function initializeHistoryPage() {
 }
 
 function filterHistoryTable() {
-  const searchTerm = document.getElementById('history-search').value.toLowerCase();
-  const typeFilter = document.getElementById('history-type-filter').value;
-  const statusFilter = document.getElementById('history-status-filter').value;
+  const searchTerm = document
+    .getElementById("history-search")
+    .value.toLowerCase();
+  const typeFilter = document.getElementById("history-type-filter").value;
+  const statusFilter = document.getElementById("history-status-filter").value;
 
-  const rows = document.querySelectorAll('#history-table tbody tr');
+  const rows = document.querySelectorAll("#history-table tbody tr");
   let visibleCount = 0;
 
-  rows.forEach(row => {
-    const title = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
-    const type = row.querySelector('td:nth-child(2)').textContent;
-    const statusBadge = row.querySelector('.status-badge');
-    const status = statusBadge ? statusBadge.textContent : '';
+  rows.forEach((row) => {
+    const title = row
+      .querySelector("td:nth-child(1)")
+      .textContent.toLowerCase();
+    const type = row.querySelector("td:nth-child(2)").textContent;
+    const statusBadge = row.querySelector(".status-badge");
+    const status = statusBadge ? statusBadge.textContent : "";
 
     const matchesSearch = title.includes(searchTerm);
     const matchesType = !typeFilter || type === typeFilter;
     const matchesStatus = !statusFilter || status === statusFilter;
 
     if (matchesSearch && matchesType && matchesStatus) {
-      row.style.display = '';
+      row.style.display = "";
       visibleCount++;
     } else {
-      row.style.display = 'none';
+      row.style.display = "none";
     }
   });
 
   // Update pagination info (simplified)
-  const paginationInfo = document.querySelector('.pagination-info');
+  const paginationInfo = document.querySelector(".pagination-info");
   if (paginationInfo && visibleCount > 0) {
     paginationInfo.textContent = `表示中: ${visibleCount} 件`;
   } else if (paginationInfo) {
-    paginationInfo.textContent = '該当する履歴が見つかりません';
+    paginationInfo.textContent = "該当する履歴が見つかりません";
   }
 }
 
 function handleHistoryAction(action, title, row) {
-  switch(action) {
-    case '詳細':
+  switch (action) {
+    case "詳細":
       // Show delivery details modal or navigate to details page
-      console.log('詳細表示:', title);
+      console.log("詳細表示:", title);
       alert(`${title} の詳細を表示します（実装予定）`);
       break;
-    case '停止':
+    case "停止":
       // Stop ongoing delivery
-      console.log('停止:', title);
+      console.log("停止:", title);
       if (confirm(`${title} の配信を停止しますか？`)) {
-        const statusBadge = row.querySelector('.status-badge');
+        const statusBadge = row.querySelector(".status-badge");
         if (statusBadge) {
-          statusBadge.textContent = '停止';
-          statusBadge.className = 'status-badge status-error';
+          statusBadge.textContent = "停止";
+          statusBadge.className = "status-badge status-error";
         }
         // Update action button
-        const actionBtn = row.querySelector('.btn-secondary');
-        if (actionBtn && actionBtn.textContent.trim() === '停止') {
-          actionBtn.textContent = '再開';
-          actionBtn.className = 'btn btn-primary btn-sm';
+        const actionBtn = row.querySelector(".btn-secondary");
+        if (actionBtn && actionBtn.textContent.trim() === "停止") {
+          actionBtn.textContent = "再開";
+          actionBtn.className = "btn btn-primary btn-sm";
         }
       }
       break;
-    case '再開':
+    case "再開":
       // Resume stopped delivery
-      console.log('再開:', title);
+      console.log("再開:", title);
       if (confirm(`${title} の配信を再開しますか？`)) {
-        const statusBadge = row.querySelector('.status-badge');
+        const statusBadge = row.querySelector(".status-badge");
         if (statusBadge) {
-          statusBadge.textContent = '進行中';
-          statusBadge.className = 'status-badge status-progress';
+          statusBadge.textContent = "進行中";
+          statusBadge.className = "status-badge status-progress";
         }
         // Update action button
-        const actionBtn = row.querySelector('.btn-primary');
-        if (actionBtn && actionBtn.textContent.trim() === '再開') {
-          actionBtn.textContent = '停止';
-          actionBtn.className = 'btn btn-secondary btn-sm';
+        const actionBtn = row.querySelector(".btn-primary");
+        if (actionBtn && actionBtn.textContent.trim() === "再開") {
+          actionBtn.textContent = "停止";
+          actionBtn.className = "btn btn-secondary btn-sm";
         }
       }
       break;
     default:
-      console.log('Unknown action:', action);
+      console.log("Unknown action:", action);
   }
 }
 
 // Statistics animation (optional enhancement)
 function animateStats() {
-  const statNumbers = document.querySelectorAll('.stat-number');
+  const statNumbers = document.querySelectorAll(".stat-number");
 
-  statNumbers.forEach(stat => {
+  statNumbers.forEach((stat) => {
     const finalValue = stat.textContent;
-    const isPercent = finalValue.includes('%');
-    const numericValue = parseFloat(finalValue.replace(/[,%]/g, ''));
+    const isPercent = finalValue.includes("%");
+    const numericValue = parseFloat(finalValue.replace(/[,%]/g, ""));
 
     if (!isNaN(numericValue)) {
-      animateNumber(stat, 0, numericValue, isPercent, finalValue.includes(','));
+      animateNumber(stat, 0, numericValue, isPercent, finalValue.includes(","));
     }
   });
 }
@@ -379,7 +393,7 @@ function animateNumber(element, start, end, isPercent, hasComma) {
     }
 
     if (isPercent) {
-      displayValue += '%';
+      displayValue += "%";
     }
 
     element.textContent = displayValue;
@@ -398,28 +412,28 @@ function easeOutCubic(t) {
 
 // Initialize page-specific functionality when navigating
 const originalNavigateToPage = navigateToPage;
-navigateToPage = function(pageId) {
+navigateToPage = function (pageId) {
   originalNavigateToPage(pageId);
 
   // Initialize page-specific functionality
-  switch(pageId) {
-    case 'broadcast':
+  switch (pageId) {
+    case "broadcast":
       initializeBroadcastForm();
       break;
-    case 'step':
+    case "step":
       initializeScenarioModal();
       initializeScenarioEditModal();
       break;
-    case 'individual':
+    case "individual":
       initializeIndividualSupport();
       break;
-    case 'history':
+    case "history":
       initializeHistoryPage();
       break;
-    case 'settings':
+    case "settings":
       initializeSettings();
       break;
-    case 'dashboard':
+    case "dashboard":
       // Animate stats when dashboard loads
       setTimeout(animateStats, 100);
       break;
@@ -432,25 +446,25 @@ function formatNumber(num) {
 }
 
 function formatDate(date) {
-  return new Date(date).toLocaleDateString('ja-JP');
+  return new Date(date).toLocaleDateString("ja-JP");
 }
 
 function formatDateTime(date) {
-  return new Date(date).toLocaleString('ja-JP');
+  return new Date(date).toLocaleString("ja-JP");
 }
 
 // Mobile navigation toggle (for responsive design)
 function toggleMobileNav() {
-  const sidebar = document.querySelector('.sidebar');
-  sidebar.classList.toggle('mobile-open');
+  const sidebar = document.querySelector(".sidebar");
+  sidebar.classList.toggle("mobile-open");
 }
 
 // Add mobile nav toggle button (if needed)
 if (window.innerWidth <= 768) {
-  const header = document.querySelector('.app-header .header-content');
-  const mobileNavBtn = document.createElement('button');
-  mobileNavBtn.innerHTML = '☰';
-  mobileNavBtn.className = 'mobile-nav-toggle';
+  const header = document.querySelector(".app-header .header-content");
+  const mobileNavBtn = document.createElement("button");
+  mobileNavBtn.innerHTML = "☰";
+  mobileNavBtn.className = "mobile-nav-toggle";
   mobileNavBtn.style.cssText = `
     background: transparent;
     border: none;
@@ -459,15 +473,15 @@ if (window.innerWidth <= 768) {
     cursor: pointer;
     padding: 5px;
   `;
-  mobileNavBtn.addEventListener('click', toggleMobileNav);
+  mobileNavBtn.addEventListener("click", toggleMobileNav);
   header.insertBefore(mobileNavBtn, header.firstChild);
 }
 
 // Handle window resize
-window.addEventListener('resize', function() {
+window.addEventListener("resize", function () {
   if (window.innerWidth > 768) {
-    const sidebar = document.querySelector('.sidebar');
-    sidebar.classList.remove('mobile-open');
+    const sidebar = document.querySelector(".sidebar");
+    sidebar.classList.remove("mobile-open");
   }
 });
 
@@ -483,20 +497,20 @@ function validateRequired(value) {
 
 // Add enhanced form validation to login
 const originalHandleLogin = handleLogin;
-handleLogin = function(e) {
+handleLogin = function (e) {
   e.preventDefault();
 
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
   // Validate inputs
   if (!validateRequired(email) || !validateRequired(password)) {
-    showError('メールアドレスとパスワードを入力してください');
+    showError("メールアドレスとパスワードを入力してください");
     return;
   }
 
   if (!validateEmail(email)) {
-    showError('有効なメールアドレスを入力してください');
+    showError("有効なメールアドレスを入力してください");
     return;
   }
 
@@ -510,17 +524,17 @@ function openChat(friendName, friendId, friendAvatar) {
   currentChatUser = { name: friendName, id: friendId, avatar: friendAvatar };
 
   // Update chat header with friend info
-  document.getElementById('chat-user-name').textContent = friendName;
-  document.getElementById('chat-user-id').textContent = friendId;
-  document.getElementById('chat-avatar').textContent = friendAvatar;
+  document.getElementById("chat-user-name").textContent = friendName;
+  document.getElementById("chat-user-id").textContent = friendId;
+  document.getElementById("chat-avatar").textContent = friendAvatar;
 
   // Show chat modal
-  const chatModal = document.getElementById('chat-modal');
-  chatModal.style.display = 'flex';
+  const chatModal = document.getElementById("chat-modal");
+  chatModal.style.display = "flex";
 
   // Clear input and focus
-  const chatInput = document.getElementById('chat-input');
-  chatInput.value = '';
+  const chatInput = document.getElementById("chat-input");
+  chatInput.value = "";
   setTimeout(() => chatInput.focus(), 100);
 
   // Scroll to bottom of messages
@@ -531,8 +545,8 @@ function openChat(friendName, friendId, friendAvatar) {
 }
 
 function closeChat() {
-  const chatModal = document.getElementById('chat-modal');
-  chatModal.style.display = 'none';
+  const chatModal = document.getElementById("chat-modal");
+  chatModal.style.display = "none";
   currentChatUser = null;
 }
 
@@ -542,35 +556,41 @@ function initializeChatEventListeners() {
   window.chatEventListenersInitialized = true;
 
   // Close button
-  document.getElementById('chat-close-btn').addEventListener('click', closeChat);
+  document
+    .getElementById("chat-close-btn")
+    .addEventListener("click", closeChat);
 
   // Send button
-  document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
+  document
+    .getElementById("chat-send-btn")
+    .addEventListener("click", sendMessage);
 
   // Enter key to send (Shift+Enter for new line)
-  document.getElementById('chat-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
+  document
+    .getElementById("chat-input")
+    .addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
 
   // Close modal when clicking outside
-  document.getElementById('chat-modal').addEventListener('click', function(e) {
+  document.getElementById("chat-modal").addEventListener("click", function (e) {
     if (e.target === this) {
       closeChat();
     }
   });
 
   // Auto-resize textarea
-  document.getElementById('chat-input').addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+  document.getElementById("chat-input").addEventListener("input", function () {
+    this.style.height = "auto";
+    this.style.height = Math.min(this.scrollHeight, 120) + "px";
   });
 }
 
 function sendMessage() {
-  const chatInput = document.getElementById('chat-input');
+  const chatInput = document.getElementById("chat-input");
   const messageText = chatInput.value.trim();
 
   if (!messageText) return;
@@ -579,12 +599,12 @@ function sendMessage() {
   const message = createMessageElement(messageText, true);
 
   // Add to chat messages
-  const chatMessages = document.getElementById('chat-messages');
+  const chatMessages = document.getElementById("chat-messages");
   chatMessages.appendChild(message);
 
   // Clear input and reset height
-  chatInput.value = '';
-  chatInput.style.height = 'auto';
+  chatInput.value = "";
+  chatInput.style.height = "auto";
 
   // Scroll to bottom
   scrollToBottom();
@@ -596,16 +616,20 @@ function sendMessage() {
 }
 
 function createMessageElement(text, isSent = false, timestamp = null) {
-  const messageDiv = document.createElement('div');
-  messageDiv.className = `message ${isSent ? 'message-sent' : 'message-received'}`;
+  const messageDiv = document.createElement("div");
+  messageDiv.className = `message ${
+    isSent ? "message-sent" : "message-received"
+  }`;
 
   const now = timestamp || new Date();
-  const timeString = now.toLocaleString('ja-JP', {
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  }).replace(/\//g, '-');
+  const timeString = now
+    .toLocaleString("ja-JP", {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+    .replace(/\//g, "-");
 
   messageDiv.innerHTML = `
     <div class="message-content">
@@ -619,32 +643,44 @@ function createMessageElement(text, isSent = false, timestamp = null) {
 
 function simulateAutoReply(originalMessage) {
   // Simple auto-reply logic for demo
-  let replyText = '';
+  let replyText = "";
 
-  if (originalMessage.includes('こんにちは') || originalMessage.includes('こんばんは')) {
-    replyText = 'こんにちは！お疲れ様です。';
-  } else if (originalMessage.includes('ありがとう')) {
-    replyText = 'どういたしまして！他にご質問はございますか？';
-  } else if (originalMessage.includes('商品') || originalMessage.includes('製品')) {
-    replyText = '商品についてご質問ですね。詳しくご説明させていただきます。';
-  } else if (originalMessage.includes('価格') || originalMessage.includes('値段')) {
-    replyText = '価格についてご案内いたします。詳細をお送りしますね。';
-  } else if (originalMessage.includes('配送') || originalMessage.includes('発送')) {
-    replyText = '配送について確認いたします。少々お待ちください。';
+  if (
+    originalMessage.includes("こんにちは") ||
+    originalMessage.includes("こんばんは")
+  ) {
+    replyText = "こんにちは！お疲れ様です。";
+  } else if (originalMessage.includes("ありがとう")) {
+    replyText = "どういたしまして！他にご質問はございますか？";
+  } else if (
+    originalMessage.includes("商品") ||
+    originalMessage.includes("製品")
+  ) {
+    replyText = "商品についてご質問ですね。詳しくご説明させていただきます。";
+  } else if (
+    originalMessage.includes("価格") ||
+    originalMessage.includes("値段")
+  ) {
+    replyText = "価格についてご案内いたします。詳細をお送りしますね。";
+  } else if (
+    originalMessage.includes("配送") ||
+    originalMessage.includes("発送")
+  ) {
+    replyText = "配送について確認いたします。少々お待ちください。";
   } else {
     const responses = [
-      'ご連絡ありがとうございます。確認いたします。',
-      '承知いたしました。詳細をお調べいたします。',
-      'お返事ありがとうございます。対応させていただきます。',
-      'ご質問いただき、ありがとうございます。',
-      'すぐに確認して、ご連絡いたします。'
+      "ご連絡ありがとうございます。確認いたします。",
+      "承知いたしました。詳細をお調べいたします。",
+      "お返事ありがとうございます。対応させていただきます。",
+      "ご質問いただき、ありがとうございます。",
+      "すぐに確認して、ご連絡いたします。",
     ];
     replyText = responses[Math.floor(Math.random() * responses.length)];
   }
 
   // Add reply message
   const replyMessage = createMessageElement(replyText, false);
-  const chatMessages = document.getElementById('chat-messages');
+  const chatMessages = document.getElementById("chat-messages");
   chatMessages.appendChild(replyMessage);
 
   // Scroll to bottom
@@ -652,12 +688,12 @@ function simulateAutoReply(originalMessage) {
 }
 
 function scrollToBottom() {
-  const chatMessages = document.getElementById('chat-messages');
+  const chatMessages = document.getElementById("chat-messages");
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
 function escapeHtml(text) {
-  const div = document.createElement('div');
+  const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
 }
@@ -669,112 +705,120 @@ function initializeScenarioModal() {
   if (scenarioModalInitialized) return;
   scenarioModalInitialized = true;
 
-  const modal = document.getElementById('scenario-modal');
-  const closeBtn = document.getElementById('scenario-close-btn');
-  const cancelBtn = document.getElementById('scenario-cancel-btn');
-  const createBtn = document.getElementById('scenario-create-btn');
-  const deliveryTimingRadios = document.querySelectorAll('input[name="deliveryTiming"]');
-  const datetimeGroup = document.getElementById('datetime-group');
+  const modal = document.getElementById("scenario-modal");
+  const closeBtn = document.getElementById("scenario-close-btn");
+  const cancelBtn = document.getElementById("scenario-cancel-btn");
+  const createBtn = document.getElementById("scenario-create-btn");
+  const deliveryTimingRadios = document.querySelectorAll(
+    'input[name="deliveryTiming"]'
+  );
+  const datetimeGroup = document.getElementById("datetime-group");
 
   // Open modal
-  const newScenarioBtn = document.querySelector('#step-page .btn-primary');
+  const newScenarioBtn = document.querySelector("#step-page .btn-primary");
   if (newScenarioBtn) {
-    newScenarioBtn.addEventListener('click', function() {
+    newScenarioBtn.addEventListener("click", function () {
       openScenarioModal();
     });
   }
 
   // Close modal events
-  closeBtn.addEventListener('click', closeScenarioModal);
-  cancelBtn.addEventListener('click', closeScenarioModal);
+  closeBtn.addEventListener("click", closeScenarioModal);
+  cancelBtn.addEventListener("click", closeScenarioModal);
 
   // Close modal when clicking outside
-  modal.addEventListener('click', function(e) {
+  modal.addEventListener("click", function (e) {
     if (e.target === modal) {
       closeScenarioModal();
     }
   });
 
   // Delivery timing change handler
-  deliveryTimingRadios.forEach(radio => {
-    radio.addEventListener('change', function() {
+  deliveryTimingRadios.forEach((radio) => {
+    radio.addEventListener("change", function () {
       handleDeliveryTimingChange(this.value);
     });
   });
 
   // Create scenario handler
-  createBtn.addEventListener('click', handleScenarioCreation);
+  createBtn.addEventListener("click", handleScenarioCreation);
 
   // Add input event listeners for real-time preview
-  const daysInput = document.getElementById('scenario-days');
-  const timeInput = document.getElementById('scenario-time');
+  const daysInput = document.getElementById("scenario-days");
+  const timeInput = document.getElementById("scenario-time");
 
   if (daysInput) {
-    daysInput.addEventListener('input', updateTimingPreview);
+    daysInput.addEventListener("input", updateTimingPreview);
   }
   if (timeInput) {
-    timeInput.addEventListener('input', updateTimingPreview);
+    timeInput.addEventListener("input", updateTimingPreview);
   }
 }
 
 function openScenarioModal() {
-  const modal = document.getElementById('scenario-modal');
-  modal.style.display = 'flex';
+  const modal = document.getElementById("scenario-modal");
+  modal.style.display = "flex";
 
   // Reset form
-  document.getElementById('scenario-name').value = '';
-  document.getElementById('scenario-description').value = '';
-  document.querySelector('input[name="deliveryTiming"][value="immediate"]').checked = true;
-  document.getElementById('scenario-days').value = '0';
-  document.getElementById('scenario-time').value = '09:00';
-  document.getElementById('scheduled-group').style.display = 'none';
+  document.getElementById("scenario-name").value = "";
+  document.getElementById("scenario-description").value = "";
+  document.querySelector(
+    'input[name="deliveryTiming"][value="immediate"]'
+  ).checked = true;
+  document.getElementById("scenario-days").value = "0";
+  document.getElementById("scenario-time").value = "09:00";
+  document.getElementById("scheduled-group").style.display = "none";
 
   // Reset preview
   updateTimingPreview();
 
   // Focus on scenario name input
   setTimeout(() => {
-    document.getElementById('scenario-name').focus();
+    document.getElementById("scenario-name").focus();
   }, 100);
 }
 
 function closeScenarioModal() {
-  const modal = document.getElementById('scenario-modal');
-  modal.style.display = 'none';
+  const modal = document.getElementById("scenario-modal");
+  modal.style.display = "none";
 }
 
 function handleDeliveryTimingChange(timing) {
-  const scheduledGroup = document.getElementById('scheduled-group');
+  const scheduledGroup = document.getElementById("scheduled-group");
 
-  if (timing === 'scheduled') {
-    scheduledGroup.style.display = 'block';
+  if (timing === "scheduled") {
+    scheduledGroup.style.display = "block";
     // Initialize preview
     updateTimingPreview();
   } else {
-    scheduledGroup.style.display = 'none';
+    scheduledGroup.style.display = "none";
   }
 }
 
 function handleScenarioCreation() {
-  const scenarioName = document.getElementById('scenario-name').value.trim();
-  const scenarioDescription = document.getElementById('scenario-description').value.trim();
-  const deliveryTiming = document.querySelector('input[name="deliveryTiming"]:checked').value;
-  const scheduledDays = document.getElementById('scenario-days').value;
-  const scheduledTime = document.getElementById('scenario-time').value;
+  const scenarioName = document.getElementById("scenario-name").value.trim();
+  const scenarioDescription = document
+    .getElementById("scenario-description")
+    .value.trim();
+  const deliveryTiming = document.querySelector(
+    'input[name="deliveryTiming"]:checked'
+  ).value;
+  const scheduledDays = document.getElementById("scenario-days").value;
+  const scheduledTime = document.getElementById("scenario-time").value;
 
   // Validation
   if (!scenarioName) {
-    alert('シナリオ名を入力してください');
+    alert("シナリオ名を入力してください");
     return;
   }
 
-  if (deliveryTiming === 'scheduled') {
+  if (deliveryTiming === "scheduled") {
     if (!scheduledDays || scheduledDays < 0 || scheduledDays > 30) {
-      alert('経過日数を0〜30日の範囲で指定してください');
+      alert("経過日数を0〜30日の範囲で指定してください");
       return;
     }
     if (!scheduledTime) {
-      alert('配信時間を指定してください');
+      alert("配信時間を指定してください");
       return;
     }
   }
@@ -784,16 +828,17 @@ function handleScenarioCreation() {
     name: scenarioName,
     description: scenarioDescription,
     deliveryTiming: deliveryTiming,
-    scheduledDays: deliveryTiming === 'scheduled' ? parseInt(scheduledDays) : null,
-    scheduledTime: deliveryTiming === 'scheduled' ? scheduledTime : null,
-    createdAt: new Date().toISOString()
+    scheduledDays:
+      deliveryTiming === "scheduled" ? parseInt(scheduledDays) : null,
+    scheduledTime: deliveryTiming === "scheduled" ? scheduledTime : null,
+    createdAt: new Date().toISOString(),
   };
 
-  console.log('Creating new scenario:', newScenario);
+  console.log("Creating new scenario:", newScenario);
 
   // Show success message with timing info
   let successMessage = `シナリオ「${scenarioName}」を作成しました！`;
-  if (deliveryTiming === 'scheduled') {
+  if (deliveryTiming === "scheduled") {
     successMessage += `\n配信タイミング: ステップ開始から${scheduledDays}日後の${scheduledTime}`;
   }
   alert(successMessage);
@@ -807,14 +852,14 @@ function handleScenarioCreation() {
 
 // Update timing preview function
 function updateTimingPreview() {
-  const daysInput = document.getElementById('scenario-days');
-  const timeInput = document.getElementById('scenario-time');
-  const previewDays = document.getElementById('preview-days');
-  const previewTime = document.getElementById('preview-time');
+  const daysInput = document.getElementById("scenario-days");
+  const timeInput = document.getElementById("scenario-time");
+  const previewDays = document.getElementById("preview-days");
+  const previewTime = document.getElementById("preview-time");
 
   if (daysInput && timeInput && previewDays && previewTime) {
-    const days = daysInput.value || '0';
-    const time = timeInput.value || '09:00';
+    const days = daysInput.value || "0";
+    const time = timeInput.value || "09:00";
 
     previewDays.textContent = days;
     previewTime.textContent = time;
@@ -823,14 +868,14 @@ function updateTimingPreview() {
 
 // Update timing preview function for edit modal
 function updateEditTimingPreview() {
-  const daysInput = document.getElementById('edit-scenario-days');
-  const timeInput = document.getElementById('edit-scenario-time');
-  const previewDays = document.getElementById('edit-preview-days');
-  const previewTime = document.getElementById('edit-preview-time');
+  const daysInput = document.getElementById("edit-scenario-days");
+  const timeInput = document.getElementById("edit-scenario-time");
+  const previewDays = document.getElementById("edit-preview-days");
+  const previewTime = document.getElementById("edit-preview-time");
 
   if (daysInput && timeInput && previewDays && previewTime) {
-    const days = daysInput.value || '0';
-    const time = timeInput.value || '09:00';
+    const days = daysInput.value || "0";
+    const time = timeInput.value || "09:00";
 
     previewDays.textContent = days;
     previewTime.textContent = time;
@@ -845,17 +890,19 @@ function initializeScenarioEditModal() {
   if (scenarioEditModalInitialized) return;
   scenarioEditModalInitialized = true;
 
-  const modal = document.getElementById('scenario-edit-modal');
-  const closeBtn = document.getElementById('scenario-edit-close-btn');
-  const cancelBtn = document.getElementById('scenario-edit-cancel-btn');
-  const saveBtn = document.getElementById('scenario-edit-save-btn');
-  const editDeliveryTimingRadios = document.querySelectorAll('input[name="editDeliveryTiming"]');
+  const modal = document.getElementById("scenario-edit-modal");
+  const closeBtn = document.getElementById("scenario-edit-close-btn");
+  const cancelBtn = document.getElementById("scenario-edit-cancel-btn");
+  const saveBtn = document.getElementById("scenario-edit-save-btn");
+  const editDeliveryTimingRadios = document.querySelectorAll(
+    'input[name="editDeliveryTiming"]'
+  );
 
   // Edit button event listeners
-  const editButtons = document.querySelectorAll('.scenario-edit-btn');
-  editButtons.forEach(btn => {
-    btn.addEventListener('click', function() {
-      const scenarioCard = this.closest('.scenario-card');
+  const editButtons = document.querySelectorAll(".scenario-edit-btn");
+  editButtons.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const scenarioCard = this.closest(".scenario-card");
       if (scenarioCard) {
         openScenarioEditModal(scenarioCard);
       }
@@ -863,113 +910,125 @@ function initializeScenarioEditModal() {
   });
 
   // Close modal events
-  closeBtn.addEventListener('click', closeScenarioEditModal);
-  cancelBtn.addEventListener('click', closeScenarioEditModal);
+  closeBtn.addEventListener("click", closeScenarioEditModal);
+  cancelBtn.addEventListener("click", closeScenarioEditModal);
 
   // Close modal when clicking outside
-  modal.addEventListener('click', function(e) {
+  modal.addEventListener("click", function (e) {
     if (e.target === modal) {
       closeScenarioEditModal();
     }
   });
 
   // Delivery timing change handler
-  editDeliveryTimingRadios.forEach(radio => {
-    radio.addEventListener('change', function() {
+  editDeliveryTimingRadios.forEach((radio) => {
+    radio.addEventListener("change", function () {
       handleEditDeliveryTimingChange(this.value);
     });
   });
 
   // Save scenario handler
-  saveBtn.addEventListener('click', handleScenarioUpdate);
+  saveBtn.addEventListener("click", handleScenarioUpdate);
 
   // Add input event listeners for real-time preview
-  const editDaysInput = document.getElementById('edit-scenario-days');
-  const editTimeInput = document.getElementById('edit-scenario-time');
+  const editDaysInput = document.getElementById("edit-scenario-days");
+  const editTimeInput = document.getElementById("edit-scenario-time");
 
   if (editDaysInput) {
-    editDaysInput.addEventListener('input', updateEditTimingPreview);
+    editDaysInput.addEventListener("input", updateEditTimingPreview);
   }
   if (editTimeInput) {
-    editTimeInput.addEventListener('input', updateEditTimingPreview);
+    editTimeInput.addEventListener("input", updateEditTimingPreview);
   }
 }
 
 function openScenarioEditModal(scenarioCard) {
-  const modal = document.getElementById('scenario-edit-modal');
+  const modal = document.getElementById("scenario-edit-modal");
 
   // Get scenario data from attributes
-  currentEditScenarioId = scenarioCard.getAttribute('data-scenario-id');
-  const scenarioName = scenarioCard.getAttribute('data-scenario-name');
-  const scenarioDescription = scenarioCard.getAttribute('data-scenario-description');
-  const deliveryTiming = scenarioCard.getAttribute('data-delivery-timing');
-  const scheduledDays = scenarioCard.getAttribute('data-scheduled-days') || '0';
-  const scheduledTime = scenarioCard.getAttribute('data-scheduled-time') || '09:00';
+  currentEditScenarioId = scenarioCard.getAttribute("data-scenario-id");
+  const scenarioName = scenarioCard.getAttribute("data-scenario-name");
+  const scenarioDescription = scenarioCard.getAttribute(
+    "data-scenario-description"
+  );
+  const deliveryTiming = scenarioCard.getAttribute("data-delivery-timing");
+  const scheduledDays = scenarioCard.getAttribute("data-scheduled-days") || "0";
+  const scheduledTime =
+    scenarioCard.getAttribute("data-scheduled-time") || "09:00";
 
   // Populate form with existing data
-  document.getElementById('edit-scenario-name').value = scenarioName;
-  document.getElementById('edit-scenario-description').value = scenarioDescription;
+  document.getElementById("edit-scenario-name").value = scenarioName;
+  document.getElementById("edit-scenario-description").value =
+    scenarioDescription;
 
   // Set delivery timing
-  document.querySelector(`input[name="editDeliveryTiming"][value="${deliveryTiming}"]`).checked = true;
+  document.querySelector(
+    `input[name="editDeliveryTiming"][value="${deliveryTiming}"]`
+  ).checked = true;
 
-  if (deliveryTiming === 'scheduled') {
-    document.getElementById('edit-scenario-days').value = scheduledDays;
-    document.getElementById('edit-scenario-time').value = scheduledTime;
-    document.getElementById('edit-scheduled-group').style.display = 'block';
+  if (deliveryTiming === "scheduled") {
+    document.getElementById("edit-scenario-days").value = scheduledDays;
+    document.getElementById("edit-scenario-time").value = scheduledTime;
+    document.getElementById("edit-scheduled-group").style.display = "block";
   } else {
-    document.getElementById('edit-scheduled-group').style.display = 'none';
+    document.getElementById("edit-scheduled-group").style.display = "none";
   }
 
   // Update preview
   updateEditTimingPreview();
 
   // Show modal
-  modal.style.display = 'flex';
+  modal.style.display = "flex";
 
   // Focus on scenario name input
   setTimeout(() => {
-    document.getElementById('edit-scenario-name').focus();
+    document.getElementById("edit-scenario-name").focus();
   }, 100);
 }
 
 function closeScenarioEditModal() {
-  const modal = document.getElementById('scenario-edit-modal');
-  modal.style.display = 'none';
+  const modal = document.getElementById("scenario-edit-modal");
+  modal.style.display = "none";
   currentEditScenarioId = null;
 }
 
 function handleEditDeliveryTimingChange(timing) {
-  const scheduledGroup = document.getElementById('edit-scheduled-group');
+  const scheduledGroup = document.getElementById("edit-scheduled-group");
 
-  if (timing === 'scheduled') {
-    scheduledGroup.style.display = 'block';
+  if (timing === "scheduled") {
+    scheduledGroup.style.display = "block";
     updateEditTimingPreview();
   } else {
-    scheduledGroup.style.display = 'none';
+    scheduledGroup.style.display = "none";
   }
 }
 
 function handleScenarioUpdate() {
-  const scenarioName = document.getElementById('edit-scenario-name').value.trim();
-  const scenarioDescription = document.getElementById('edit-scenario-description').value.trim();
-  const deliveryTiming = document.querySelector('input[name="editDeliveryTiming"]:checked').value;
-  const scheduledDays = document.getElementById('edit-scenario-days').value;
-  const scheduledTime = document.getElementById('edit-scenario-time').value;
+  const scenarioName = document
+    .getElementById("edit-scenario-name")
+    .value.trim();
+  const scenarioDescription = document
+    .getElementById("edit-scenario-description")
+    .value.trim();
+  const deliveryTiming = document.querySelector(
+    'input[name="editDeliveryTiming"]:checked'
+  ).value;
+  const scheduledDays = document.getElementById("edit-scenario-days").value;
+  const scheduledTime = document.getElementById("edit-scenario-time").value;
 
   // Validation
   if (!scenarioName) {
-    alert('シナリオ名を入力してください');
+    alert("シナリオ名を入力してください");
     return;
   }
 
-  if (deliveryTiming === 'scheduled') {
+  if (deliveryTiming === "scheduled") {
     if (!scheduledDays || scheduledDays < 0 || scheduledDays > 30) {
-      alert('経過日数を0〜30日の範囲で指定してください');
+      alert("経過日数を0〜30日の範囲で指定してください");
       return;
     }
     if (!scheduledTime) {
-      alert('配信時間を指定してください');
+      alert("配信時間を指定してください");
       return;
     }
   }
@@ -980,19 +1039,20 @@ function handleScenarioUpdate() {
     name: scenarioName,
     description: scenarioDescription,
     deliveryTiming: deliveryTiming,
-    scheduledDays: deliveryTiming === 'scheduled' ? parseInt(scheduledDays) : null,
-    scheduledTime: deliveryTiming === 'scheduled' ? scheduledTime : null,
-    updatedAt: new Date().toISOString()
+    scheduledDays:
+      deliveryTiming === "scheduled" ? parseInt(scheduledDays) : null,
+    scheduledTime: deliveryTiming === "scheduled" ? scheduledTime : null,
+    updatedAt: new Date().toISOString(),
   };
 
-  console.log('Updating scenario:', updatedScenario);
+  console.log("Updating scenario:", updatedScenario);
 
   // Update the scenario card in the UI
   updateScenarioCardInUI(updatedScenario);
 
   // Show success message
   let successMessage = `シナリオ「${scenarioName}」を更新しました！`;
-  if (deliveryTiming === 'scheduled') {
+  if (deliveryTiming === "scheduled") {
     successMessage += `\n配信タイミング: ステップ開始から${scheduledDays}日後の${scheduledTime}`;
   }
   alert(successMessage);
@@ -1004,26 +1064,34 @@ function handleScenarioUpdate() {
 }
 
 function updateScenarioCardInUI(scenario) {
-  const scenarioCard = document.querySelector(`[data-scenario-id="${scenario.id}"]`);
+  const scenarioCard = document.querySelector(
+    `[data-scenario-id="${scenario.id}"]`
+  );
   if (scenarioCard) {
     // Update data attributes
-    scenarioCard.setAttribute('data-scenario-name', scenario.name);
-    scenarioCard.setAttribute('data-scenario-description', scenario.description);
-    scenarioCard.setAttribute('data-delivery-timing', scenario.deliveryTiming);
+    scenarioCard.setAttribute("data-scenario-name", scenario.name);
+    scenarioCard.setAttribute(
+      "data-scenario-description",
+      scenario.description
+    );
+    scenarioCard.setAttribute("data-delivery-timing", scenario.deliveryTiming);
 
-    if (scenario.deliveryTiming === 'scheduled') {
-      scenarioCard.setAttribute('data-scheduled-days', scenario.scheduledDays);
-      scenarioCard.setAttribute('data-scheduled-time', scenario.scheduledTime);
+    if (scenario.deliveryTiming === "scheduled") {
+      scenarioCard.setAttribute("data-scheduled-days", scenario.scheduledDays);
+      scenarioCard.setAttribute("data-scheduled-time", scenario.scheduledTime);
     } else {
-      scenarioCard.removeAttribute('data-scheduled-days');
-      scenarioCard.removeAttribute('data-scheduled-time');
+      scenarioCard.removeAttribute("data-scheduled-days");
+      scenarioCard.removeAttribute("data-scheduled-time");
     }
 
     // Update visible elements
-    const nameElement = scenarioCard.querySelector('.scenario-header h3');
-    const descriptionElement = scenarioCard.querySelector('.scenario-description');
+    const nameElement = scenarioCard.querySelector(".scenario-header h3");
+    const descriptionElement = scenarioCard.querySelector(
+      ".scenario-description"
+    );
 
     if (nameElement) nameElement.textContent = scenario.name;
-    if (descriptionElement) descriptionElement.textContent = scenario.description;
+    if (descriptionElement)
+      descriptionElement.textContent = scenario.description;
   }
 }
